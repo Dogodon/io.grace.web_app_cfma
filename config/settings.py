@@ -10,10 +10,23 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
-from pathlib import Path
-from decouple import config
-import dj_database_url
+
+# config/settings.py (Tout en haut du fichier)
 import os
+from pathlib import Path
+
+# 🎯 IMPORTATION SÉCURISÉE DE CONFIG (DECOUPLE)
+try:
+    from decouple import config
+except ImportError:
+    # Option de secours si decouple n'est pas utilisé ou mal installé
+    def config(key, default=None):
+        return os.environ.get(key, default)
+
+
+#from pathlib import Path
+#from decouple import config
+import dj_database_url
 
 
 import cloudinary
@@ -68,7 +81,40 @@ INSTALLED_APPS = [
 
 # config/settings.py
 
-# Détecte automatiquement l'environnement Render
+
+# config/settings.py (Section Cloudinary)
+
+if 'RENDER' in os.environ:
+    # 🎯 PRODUCTION : Lecture directe et ultra-rapide des variables systèmes Render
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.environ.get("cloud_name_cloudinary"),
+        'API_KEY': os.environ.get("api_key_cloudinary"),
+        'API_SECRET': os.environ.get("api_secret_cloudinary"),
+    }
+else:
+    # 💻 LOCAL : Lecture de votre fichier .env sur votre Mac
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': config("cloud_name_cloudinary"),
+        'API_KEY': config("api_key_cloudinary"),
+        'API_SECRET': config("api_secret_cloudinary"),
+    }
+
+# Gestion moderne des stockages Django
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+MEDIA_URL = '/media/'
+
+
+
+
+""" # Détecte automatiquement l'environnement Render
 if 'RENDER' in os.environ:
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': os.environ.get("cloud_name_cloudinary"),
@@ -82,10 +128,10 @@ else:
         'API_KEY': config("api_key_cloudinary"),
         'API_SECRET': config("api_secret_cloudinary"),
     }
-
+ """
 """ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
  """
-# config/settings.py (Tout en bas, remplacez DEFAULT_FILE_STORAGE par ceci)
+""" # config/settings.py (Tout en bas, remplacez DEFAULT_FILE_STORAGE par ceci)
 
 STORAGES = {
     "default": {
@@ -94,7 +140,7 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
-}
+} """
 
 """ # config/settings.py
 
