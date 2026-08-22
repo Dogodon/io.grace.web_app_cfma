@@ -1,0 +1,527 @@
+<!-- templates/vitrine/index.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<!-- <div class="hero-bg-fix mb-4 border-bottom position-relative" 
+     style="--hero-img: url('{% static 'images/LOGO_CFMA.png' %}');">
+    
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold text-dark mb-3">Diagnostic Automobile Expert & Formations Pro</h1>
+                <p class="lead text-dark mb-4 mx-auto fw-semibold" style="max-width: 800px; text-shadow: 0 1px 2px rgba(255,255,255,0.8);">
+                    Confiez votre véhicule à des experts certifiés ou formez-vous aux dernières technologies de diagnostic électronique embarqué.
+                </p>
+                
+                <!- Centrage horizontal des boutons d'action ->
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center mt-4">
+                    <form method="POST" action="{% url 'cfma_base:prendre_rdv_diagnostic' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg px-4 shadow-sm">Prendre RDV Diagnostic</button>
+                    </form>
+                    
+                    <a href="{% url 'catalogue_formations' %}" class="btn btn-outline-secondary btn-lg px-4 bg-white shadow-sm">Découvrir nos Formations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!- Style ajusté pour maximiser la visibilité de l'image ->
+<style>
+    .hero-bg-fix {
+        background: linear-gradient(rgba(248, 249, 250, 0.88), rgba(248, 249, 250, 0.88)), var(--hero-img) no-repeat center center;
+        background-size: contain; /* 💡 Option A : "contain" montre TOUT le logo sans le couper. Utilisez "cover" s'il doit remplir tout l'espace quitte à déborder un peu */
+        min-height: 550px;       /* 🚀 AGRANDI EN LONGUEUR : Passé de 400px à 550px */
+        padding-top: 100px;      /* Espacement interne haut */
+        padding-bottom: 100px;   /* Espacement interne bas */
+    }
+</style> -->
+
+<style>
+    .hero-bg-fix {
+        background-image: var(--hero-img);
+        background-repeat: no-repeat;
+        
+        /* 🎯 POSITION : Centré au top */
+        background-position: center 20px; 
+        
+        /* 🎯 ENCORE PLUS GRAND : Hauteur du logo poussée à 300px */
+        background-size: auto 300px; 
+        
+        /* 🎯 CASE ENCORE PLUS GRANDE : Padding top augmenté à 340px pour ne rien chevaucher */
+        padding-top: 340px !important; 
+        padding-bottom: 120px !important;
+        
+        background-color: #f8f9fa;
+    }
+
+    /* Ajustement responsive téléphones */
+    @media (max-width: 768px) {
+        .hero-bg-fix {
+            background-size: auto 180px;
+            padding-top: 210px !important;
+            padding-bottom: 60px !important;
+        }
+    }
+</style>
+
+<!-- =========================================================================
+    1. SECTION HÉRO / BANNIÈRE PRINCIPALE AVEC IMAGE EN ARRIÈRE-PLAN
+========================================================================== -->
+<div class="py-5 mb-4 border-bottom position-relative hero-bg-fix" 
+     style="--hero-img: url('{% static 'images/cfma_logo_1.png' %}');">
+     
+    <div class="container">
+        <div class="row align-items-stretch">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold text-dark mb-3">Centre de Formation aux Métiers de l'Automobile</h1>
+                <p class="lead text-dark mb-4 mx-auto fw-semibold" style="max-width: 800px; text-shadow: 0 1px 2px rgba(255,255,255,0.8);">
+                    Confiez votre véhicule à des experts en mécanique ou formez-vous aux dernières technologies de diagnostic électronique embarqué.
+                </p>
+                
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center mt-4">
+                    <form method="POST" action="{% url 'cfma_base:prendre_rdv_diagnostic' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg px-4 shadow-sm">Prendre RDV Diagnostic</button>
+                    </form>
+                    <a href="{% url 'catalogue_formations' %}" class="btn btn-outline-secondary btn-lg px-4 bg-white shadow-sm btn-hover-orange">Découvrir nos Formations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Style correct qui isole le CSS pour que VS Code ne râle plus -->
+<style>
+    .btn-hover-orange {
+    color: #495057; /* Couleur initiale du texte (gris foncé pro) */
+    border-color: #6c757d; /* Couleur initiale de la bordure */
+    transition: color 0.3s ease, border-color 0.3s ease; /* Transition fluide */
+}
+
+.btn-hover-orange:hover {
+    color: #ff7900 !important; /* Le texte devient orange au survol */
+    border-color: #ff7900 !important; /* Optionnel : la bordure devient orange aussi */
+    background-color: #ffffff !important; /* Force le fond à rester blanc au lieu de griser */
+}
+
+    .hero-bg-fix {
+        background: linear-gradient(rgba(248, 249, 250, 0.85), rgba(248, 249, 250, 0.85)), var(--hero-img) no-repeat center center;
+        background-size: cover;
+        min-height: 400px;
+    }
+</style>
+
+
+<!-- =========================================================================
+    2. CARROUSEL DÉFILANT CONTINU (S'ARRÊTE AU TOUCHER / SURVOL)
+========================================================================== -->
+<div class="marquee-container mb-5 shadow-sm border-top border-bottom py-3 bg-white">
+    <div class="marquee-track">
+        
+        <!-- Bloc de cases originales (7 Pôles) -->
+
+
+<div class="marquee-item">
+  <div class="marquee-card border-start border-dark border-3">
+    <i class="fa-solid fa-car text-dark fa-2x mb-2"></i>
+    <h6>Pont elevateur</h6>
+  </div>
+</div>
+<div class="marquee-item">
+  <div class="marquee-card border-start border-dark border-3">
+    <i class="fa-solid fa-soap text-dark fa-2x mb-2"></i>
+    <h6>Lavage</h6>
+  </div>
+</div>
+
+
+
+
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-info border-3">
+                <i class="fa-solid fa-laptop-code text-info fa-2x mb-2"></i>
+                <h6>Diagnostic Électronique</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-success border-3">
+                <i class="fa-solid fa-screwdriver-wrench text-success fa-2x mb-2"></i>
+                <h6>Maintenance Mécanique</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-warning border-3">
+                <i class="fa-solid fa-bolt text-warning fa-2x mb-2"></i>
+                <h6>Hybrides & Électriques</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-primary border-3">
+                <i class="fa-solid fa-snowflake text-primary fa-2x mb-2"></i>
+                <h6>Climatisation Auto</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-danger border-3">
+                <i class="fa-solid fa-circle-notch text-danger fa-2x mb-2"></i>
+                <h6>Liaisons au Sol</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-secondary border-3">
+                <i class="fa-solid fa-spray-can text-secondary fa-2x mb-2"></i>
+                <h6>Carrosserie & Peinture</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-dark border-3">
+                <i class="fa-solid fa-user-tie text-dark fa-2x mb-2"></i>
+                <h6>Gestion d'Atelier</h6>
+            </div>
+        </div>
+
+        <!-- Duplication exacte des cases pour créer l'effet de boucle infinie parfaite -->
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-info border-3">
+                <i class="fa-solid fa-laptop-code text-info fa-2x mb-2"></i>
+                <h6>Diagnostic Électronique</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-success border-3">
+                <i class="fa-solid fa-screwdriver-wrench text-success fa-2x mb-2"></i>
+                <h6>Maintenance Mécanique</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-warning border-3">
+                <i class="fa-solid fa-bolt text-warning fa-2x mb-2"></i>
+                <h6>Hybrides & Électriques</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-primary border-3">
+                <i class="fa-solid fa-snowflake text-primary fa-2x mb-2"></i>
+                <h6>Climatisation Auto</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-danger border-3">
+                <i class="fa-solid fa-circle-notch text-danger fa-2x mb-2"></i>
+                <h6>Liaisons au Sol</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-secondary border-3">
+                <i class="fa-solid fa-spray-can text-secondary fa-2x mb-2"></i>
+                <h6>Carrosserie & Peinture</h6>
+            </div>
+        </div>
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-dark border-3">
+                <i class="fa-solid fa-user-tie text-dark fa-2x mb-2"></i>
+                <h6>Gestion d'Atelier</h6>
+            </div>
+        </div>
+
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-dark border-3">
+                <i class="fa-solid fa-user-tie text-dark fa-2x mb-2"></i>
+                <h6>Pont elevateur</h6>
+            </div>
+        </div>
+
+
+        <div class="marquee-item">
+            <div class="marquee-card border-start border-dark border-3">
+                <i class="fa-solid fa-user-tie text-dark fa-2x mb-2"></i>
+                <h6>Lavage</h6>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        
+
+<div class="row g-4">
+
+
+
+
+
+
+
+
+
+    <!-- =========================================================================
+        1️⃣ COLONNE DE GAUCHE : BLOC D'AFFICHAGE DE L'ESPACE SERVICES (ATELIER)
+    ========================================================================== -->
+    <div class="col-md-6">
+        <div class="card h-100 border-light shadow-sm">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="text-primary mb-3"><i class="fa-solid fa-wrench fa-2x"></i></div>
+                <h3 class="card-title fw-bold">Espace Retour sur Services</h3>
+                <p class="card-text text-muted">Suivez l'état de votre véhicule en temps réel durant son diagnostic dans nos ateliers.</p>
+                
+                <div class="list-group list-group-flush my-3">
+                    <!-- 🌟 BOUCLE PRINCIPALE SERVICES -->
+                    {% for com in commentaires %}
+                        <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
+                            <div>
+                                <span class="fw-bold text-dark d-block">
+                                    <i class="fa-solid fa-file-invoice-dollar me-2 text-primary"></i>{{ com.titre_prestation }}
+                                </span>
+                                <small class="text-muted"><i class="fa-solid fa-user me-1"></i>{{ com.auteur }}</small>
+                            </div>
+                            
+                            <!-- BOUTON DÉCLENCHEUR DE LA MODAL CLIENT -->
+                            <button type="button" class="btn btn-hover-orange btn-sm border px-3 rounded-pill fw-bold shadow-sm bg-white" data-bs-toggle="modal" data-bs-target="#modalEvenement{{ com.id }}">
+                                Voir les commentaires <i class="fa-solid fa-chevron-right small ms-1"></i>
+                            </button>
+                        </div>
+                        {% empty %}
+                        <!-- 🚨 SÉCURITÉ DE SECOURS ABSOLUE SERVICES -->
+                            {% for com in commentaires.all %}
+                                <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
+                                    <div>
+                                        <span class="fw-bold text-dark d-block">{{ com.titre_prestation }}</span>
+                                        <small class="text-muted">{{ com.auteur }}</small>
+                                    </div>
+                                    <button type="button" class="btn btn-hover-orange btn-sm border px-3 rounded-pill fw-bold bg-white" data-bs-toggle="modal" data-bs-target="#modalEvenement{{ com.id }}">
+                                        Voir les commentaires <i class="fa-solid fa-chevron-right small ms-1"></i>
+                                    </button>
+                                </div>
+                            {% endfor %}
+ 
+                    {% endfor %}
+                </div>
+
+                <!-- LIEN VERS LE FIL GLOBAL DES SERVICES -->
+                <div class="mt-auto pt-3 border-top text-center">
+                    <a href="{% url 'cfma_base:galeries_commentaires_clients' %}" class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold shadow-sm w-100">
+                        <i class="fa-solid fa-comments me-2"></i>Accéder au Fil de Commentaires Global
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Fin Colonne Services -->
+
+    <!-- =========================================================================
+        2️⃣ COLONNE DE DROITE : BLOC D'AFFICHAGE DE L'ESPACE ÉVÉNEMENTS (ACADÉMIE)
+    ========================================================================== -->
+    <div class="col-md-6">
+        <div class="card h-100 border-light shadow-sm">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="text-success mb-3"><i class="fa-solid fa-graduation-cap fa-2x"></i></div>
+                <h3 class="card-title fw-bold">Espace Retour sur Événements</h3>
+                <p class="card-text text-muted">Suivez nos événements en temps réel au sein de notre académie.</p>
+                
+                <div class="list-group list-group-flush my-3">
+                    <!-- 🌟 BOUCLE PRINCIPALE ÉVÉNEMENTS -->
+                    {% for eve in evenements %}
+                        <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
+                            <div>
+                                <span class="fw-bold text-dark d-block">
+                                    <i class="fa-solid fa-calendar-check me-2 text-success"></i>{{ eve.titre_evenement }}
+                                </span>
+                                <small class="text-muted"><i class="fa-solid fa-user me-1"></i>{{ eve.acteurs }}</small>
+                                <span class="badge {% if eve.statut_evenement == 'en_cours' %}bg-success{% else %}bg-secondary{% endif %} ms-2 extra-small">
+                                    {{ eve.get_statut_evenement_display }}
+                                </span>
+                            </div>
+                            
+                            <!-- BOUTON DÉCLENCHEUR DE LA MODAL ÉVÉNEMENT -->
+                            <button type="button" class="btn btn-hover-orange btn-sm border px-3 rounded-pill fw-bold shadow-sm bg-white" data-bs-toggle="modal" data-bs-target="#modalEvenementAcademie{{ eve.id }}">
+                                Voir les événements <i class="fa-solid fa-chevron-right small ms-1"></i>
+                            </button>
+                        </div>
+                        {% empty %}
+                        <!-- 🚨 SÉCURITÉ DE SECOURS ABSOLUE ÉVÉNEMENTS -->
+                            {% for eve in evenements.all %}
+                                <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
+                                    <div>
+                                        <span class="fw-bold text-dark d-block">{{ eve.titre_evenement }}</span>
+                                        <small class="text-muted">{{ eve.acteurs }}</small>
+                                    </div>
+                                    <button type="button" class="btn btn-hover-orange btn-sm border px-3 rounded-pill fw-bold bg-white" data-bs-toggle="modal" data-bs-target="#modalEvenementAcademie{{ eve.id }}">
+                                        Voir les événements <i class="fa-solid fa-chevron-right small ms-1"></i>
+                                    </button>
+                                </div>
+                            {% endfor %}
+
+                    {% endfor %}
+                </div>
+                
+                <!-- LIEN VERS LE FIL GLOBAL DES ÉVÉNEMENTS -->
+                <div class="mt-auto pt-3 border-top text-center">
+                    <a href="{% url 'cfma_base:galeries_commentaires_evenements' %}" class="btn btn-outline-success btn-sm rounded-pill px-4 fw-bold shadow-sm w-100">
+                        <i class="fa-solid fa-images me-2"></i>Accéder au Fil des Événements Global
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Fin Colonne Événements -->
+
+</div> <!-- Fin de la row g-4 -->
+
+
+
+<!-- =========================================================================
+    3. SECTION DES DEUX PÔLES D'ACTIVITÉ
+========================================================================== -->
+
+
+<!-- =========================================================================
+    STYLES CSS POUR LE CARROUSEL DÉFILANT CONTINU
+========================================================================== -->
+<style>
+    .marquee-container {
+        overflow: hidden;
+        width: 100%;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .marquee-track {
+        display: flex;
+        width: max-content;
+        animation: scrollMarquee 25s linear infinite; /* Vitesse globale du défilement */
+    }
+
+    /* Arrête l'animation au survol de la souris ou au toucher */
+    .marquee-container:hover .marquee-track,
+    .marquee-container:active .marquee-track {
+        animation-play-state: paused;
+    }
+
+    .marquee-item {
+        padding: 0 15px;
+        display: inline-block;
+    }
+
+    .marquee-card {
+        background-color: #f8f9fa;
+        padding: 1.25rem;
+        border-radius: 8px;
+        min-width: 240px;
+        text-align: center;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+        transition: transform 0.2s, background-color 0.2s;
+    }
+
+    /* Léger effet visuel sur la case survolée pendant la pause */
+    .marquee-card:hover {
+        background-color: #ffffff;
+        transform: translateY(-3px);
+    }
+
+    .marquee-card h6 {
+        margin: 0;
+        font-weight: 700;
+        color: #212529;
+        font-size: 0.95rem;
+    }
+
+    /* Animation CSS pure pour le défilement horizontal linéaire */
+    @keyframes scrollMarquee {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-50%); /* Défile pile de la moitié (la partie dupliquée) */
+        }
+    }
+
+
+
+
+
+
+
+    /* 🌀 CONFIGURATION DU CONTENEUR DU GRAND MARQUEE */
+.grand-marquee-container {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    white-space: nowrap;
+}
+
+/* 🚂 LE RAIL DE DÉFILEMENT (ANIMATION CONTINUE) */
+.grand-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: grandMarqueeScroll 35s linear infinite;
+}
+
+/* 🛑 PAUSE AUTOMATIQUE AU TOUCHER OU SURVOL DE LA SOURIS */
+.grand-marquee-container:hover .grand-marquee-track {
+    animation-play-state: paused;
+}
+
+/* 📦 CHAQUE ÉLÉMENT DU CARROUSEL */
+.grand-marquee-item {
+    padding: 0 15px;
+    display: inline-block;
+}
+
+/* 🎴 LA GRANDE CARTE DE SERVICE (GRAND FORMAT) */
+.grand-service-card {
+    width: 340px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.grand-service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* 🖼️ BOX DE L'IMAGE (HAUTEUR AGRANDIE À 340px) */
+.grand-card-image-box {
+    width: 100%;
+    height: 340px;
+    background-color: #212529;
+    overflow: hidden;
+}
+
+/* 🏷️ LA CASE DU BAS (NOM DU SERVICE ET ICÔNE) */
+.grand-card-footer-box {
+    width: 100%;
+    height: 80px;
+    background-color: #ffffff;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* ⭕ LE ROND DE L'ICÔNE (COULEUR CHARTE ORANGE) */
+.footer-icon-circle {
+    width: 45px;
+    height: 45px;
+    background-color: rgba(255, 102, 0, 0.1);
+    color: #FF6600;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* 🎬 SCRIPT DE L'ANIMATION CSS */
+@keyframes grandMarqueeScroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+</style>
+{% endblock %}
