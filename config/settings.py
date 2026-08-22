@@ -126,7 +126,7 @@ MEDIA_URL = '/media/'
 # 📧 CONFIGURATION UNIFIÉE DU SERVEUR D'ENVOI D'EMAILS (DJANGO 5.1+)
 # =========================================================================
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+""" EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '://gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -153,7 +153,7 @@ MAILERS = {
 }
 
 # L'adresse d'expédition générale
-DEFAULT_FROM_EMAIL = USER_GMAIL
+DEFAULT_FROM_EMAIL = USER_GMAIL """
 
 """ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '://gmail.com'
@@ -495,6 +495,29 @@ DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
  """
 
 
+
+
+# config/settings.py (Tout en bas du fichier)
+
+# =========================================================================
+# 📧 CONFIGURATION SMTP GMAIL UNIVERSELLE ET SÉCURISÉE
+# =========================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '://gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+if 'RENDER' in os.environ:
+    # Production sur Render : Lecture stricte des variables système
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+else:
+    # Développement local sur votre Mac
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
 
 
 # raise InconsistentMigrationHistory(
