@@ -290,7 +290,6 @@
                         </div>
                     {% empty %}
                         <!-- 🚨 SÉCURITÉ DE SECOURS ABSOLUE SERVICES -->
-                        {% if commentaires.all %}
                             {% for com in commentaires.all %}
                                 <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
                                     <div>
@@ -347,7 +346,6 @@
                         </div>
                     {% empty %}
                         <!-- 🚨 SÉCURITÉ DE SECOURS ABSOLUE ÉVÉNEMENTS -->
-                        {% if evenements.all %}
                             {% for eve in evenements.all %}
                                 <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
                                     <div>
