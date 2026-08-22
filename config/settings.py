@@ -63,8 +63,24 @@ INSTALLED_APPS = [
 ]
 
 
+# config/settings.py
+
+# 🎯 1. DICTIONNAIRE DE CONFIGURATION UNIQUE POUR DJANGO
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config("cloud_name_cloudinary"),
+    'API_KEY': config("api_key_cloudinary"),
+    'API_SECRET': config("api_secret_cloudinary"),
+}
+
+# 🎯 2. BRANCHEMENT DU STOCKAGE DES MÉDIAS (REMPLACE LE DISQUE DUR DE RENDER)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# 🎯 3. URL DES MÉDIAS (FACULTATIF MAIS RECOMMANDÉ POUR LE ROUTAGE DES TEMPLATES)
+MEDIA_URL = '/media/'
 
 
+
+""" 
 # Configuration       
 cloudinary.config( 
     cloud_name = config("cloud_name_cloudinary"), 
@@ -74,6 +90,8 @@ cloudinary.config(
 )
 
 # Upload an image
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 upload_result = cloudinary.uploader.upload("https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg",
                                            public_id="shoes")
 print(upload_result["secure_url"])
@@ -84,7 +102,7 @@ print(optimize_url)
 
 # Transform the image: auto-crop to square aspect_ratio
 auto_crop_url, _ = cloudinary_url("shoes", width=500, height=500, crop="auto", gravity="auto")
-print(auto_crop_url)
+print(auto_crop_url) """
 
 
 
