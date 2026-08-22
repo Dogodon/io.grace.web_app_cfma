@@ -48,22 +48,45 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 INSTALLED_APPS = [
     "jazzmin",
-    'cloudinary_storage',
 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    
+    
+    'cloudinary_storage',
+
     'django.contrib.staticfiles',
 
 
-    'cfma_base',
     'cloudinary',
+    'cfma_base',
+
 ]
 
-
 # config/settings.py
+
+# Détecte automatiquement l'environnement Render
+if 'RENDER' in os.environ:
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.environ.get("cloud_name_cloudinary"),
+        'API_KEY': os.environ.get("api_key_cloudinary"),
+        'API_SECRET': os.environ.get("api_secret_cloudinary"),
+    }
+else:
+    # Lecture locale via votre fichier .env sur votre Mac
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': config("cloud_name_cloudinary"),
+        'API_KEY': config("api_key_cloudinary"),
+        'API_SECRET': config("api_secret_cloudinary"),
+    }
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
+""" # config/settings.py
 
 # 🎯 1. DICTIONNAIRE DE CONFIGURATION UNIQUE POUR DJANGO
 CLOUDINARY_STORAGE = {
@@ -74,9 +97,8 @@ CLOUDINARY_STORAGE = {
 
 # 🎯 2. BRANCHEMENT DU STOCKAGE DES MÉDIAS (REMPLACE LE DISQUE DUR DE RENDER)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+ """
 
-# 🎯 3. URL DES MÉDIAS (FACULTATIF MAIS RECOMMANDÉ POUR LE ROUTAGE DES TEMPLATES)
-MEDIA_URL = '/media/'
 
 
 
