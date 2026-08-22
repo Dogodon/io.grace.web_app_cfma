@@ -120,7 +120,42 @@ MEDIA_URL = '/media/'
 # =========================================================================
 # 📧 CONFIGURATION DU SERVEUR D'ENVOI D'EMAILS (SMTP GMAIL)
 # =========================================================================
+# config/settings.py (Tout en bas du fichier)
+
+# =========================================================================
+# 📧 CONFIGURATION UNIFIÉE DU SERVEUR D'ENVOI D'EMAILS (DJANGO 5.1+)
+# =========================================================================
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '://gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+if 'RENDER' in os.environ:
+    # Récupération sécurisée des variables système en production
+    USER_GMAIL = os.environ.get('EMAIL_HOST_USER')
+    PASSWORD_GMAIL = os.environ.get('EMAIL_HOST_PASSWORD')
+else:
+    # Lecture locale via decouple
+    USER_GMAIL = config('EMAIL_HOST_USER')
+    PASSWORD_GMAIL = config('EMAIL_HOST_PASSWORD')
+
+# Utilisation du dictionnaire moderne MAILERS requis par votre version de Django
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "HOST": "smtp.gmail.com",
+        "PORT": 587,
+        "USE_TLS": True,
+        "USER": USER_GMAIL,
+        "PASSWORD": PASSWORD_GMAIL,
+    }
+}
+
+# L'adresse d'expédition générale
+DEFAULT_FROM_EMAIL = USER_GMAIL
+
+""" EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '://gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -135,7 +170,7 @@ else:
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
+ """
 
 
 
@@ -422,12 +457,12 @@ MEDIA_URL = '/media/'
 # =========================================================================
 # CONFIGURATIONS EMAILS ET AUTHENTIFICATION
 # =========================================================================
-MAILERS = {
+""" MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
-
+ """
 AUTH_USER_MODEL = 'cfma_base.User'
 
 AUTHENTICATION_BACKENDS = [
@@ -445,7 +480,7 @@ LOGIN_URL = 'login'
 # =========================================================================
 # 📧 CONFIGURATION DU SERVEUR D'ENVOI D'EMAILS (SMTP GMAIL)
 # =========================================================================
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+""" EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = '://gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -457,7 +492,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Le mot de passe d'applica
 # 📬 L'adresse par défaut qui émet et reçoit les emails dans votre code
 DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 
-
+ """
 
 
 
