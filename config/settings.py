@@ -84,15 +84,20 @@ INSTALLED_APPS = [
 
 # config/settings.py (Section Cloudinary)
 
+# config/settings.py (Tout en bas du fichier)
+
+# =========================================================================
+# 🖼️ CONFIGURATION DU STOCKAGE DES MÉDIAS (CLOUDINARY)
+# =========================================================================
 if 'RENDER' in os.environ:
-    # 🎯 PRODUCTION : Lecture directe et ultra-rapide des variables systèmes Render
+    # Production sur Render
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': os.environ.get("cloud_name_cloudinary"),
         'API_KEY': os.environ.get("api_key_cloudinary"),
         'API_SECRET': os.environ.get("api_secret_cloudinary"),
     }
 else:
-    # 💻 LOCAL : Lecture de votre fichier .env sur votre Mac
+    # Développement local sur votre Mac
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': config("cloud_name_cloudinary"),
         'API_KEY': config("api_key_cloudinary"),
@@ -110,6 +115,27 @@ STORAGES = {
 }
 
 MEDIA_URL = '/media/'
+
+
+# =========================================================================
+# 📧 CONFIGURATION DU SERVEUR D'ENVOI D'EMAILS (SMTP GMAIL)
+# =========================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '://gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+if 'RENDER' in os.environ:
+    # Production sur Render : Lecture directe des variables d'environnement
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+else:
+    # Développement local sur votre Mac : Lecture de votre fichier .env
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 
