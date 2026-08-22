@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card border-primary shadow-sm mt-4">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h4 class="mb-0 fw-bold"><i class="fa-solid fa-lock me-2"></i>Connexion Portail CFMA</h4>
+            </div>
+            <div class="card-body p-4">
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger p-2 small">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Identifiant -->
+                    <div class="form-group mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">Nom d'utilisateur</label>
+                        <input type="text" name="username" id="{{ form.username.id_for_label }}" 
+                               class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                               placeholder="Ex: j.dupont" required>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">{% for error in form.username.errors %}{{ error }}{% endfor %}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="form-group mb-4">
+                        <label for="{{ form.password.id_for_label }}" class="form-label fw-bold">Mot de passe</label>
+                        <input type="password" name="password" id="{{ form.password.id_for_label }}" 
+                               class="form-control {% if form.password.errors %}is-invalid{% endif %}" 
+                               placeholder="••••••••" required>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">{% for error in form.password.errors %}{{ error }}{% endfor %}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold">Accéder à mon espace</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-center py-3 border-top">
+                <span class="text-muted">Nouveau sur la plateforme ?</span>
+                <a href="{% url 'inscription' %}" class="link-primary fw-bold text-decoration-none ms-1">Créer un compte</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

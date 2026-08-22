@@ -1,0 +1,225 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENTRE DE FORMATION AUX METIERS DE L'AUTOMOBILE</title>
+    <!-- Thème Bootstrap Litera -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Icones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- 🟧 SURCHARGE ORANGE DE BOOTSTRAP LITERA -->
+    <style>
+        :root, [data-bs-theme=light] {
+            --bs-primary: #ec6f45; 
+            --bs-primary-rgb: 236, 111, 69;
+            --bs-link-color: #ec6f45;
+            --bs-link-color-rgb: 236, 111, 69;
+            --bs-link-hover-color: #be532e;
+            --bs-link-hover-color-rgb: 190, 83, 46;
+
+            --bs-primary-text-emphasis: #5e2614;
+            --bs-primary-bg-subtle: #fbeadd;
+            --bs-primary-border-subtle: #f7ceb5;
+            --bs-focus-ring-color: rgba(236, 111, 69, 0.25);
+        }
+
+        .bg-primary { background-color: var(--bs-primary) !important; }
+        .text-primary { color: var(--bs-primary) !important; }
+        .btn-primary {
+            --bs-btn-bg: var(--bs-primary);
+            --bs-btn-border-color: var(--bs-primary);
+            --bs-btn-hover-bg: #be532e;
+            --bs-btn-hover-border-color: #be532e;
+            --bs-btn-active-bg: #be532e;
+            --bs-btn-disabled-bg: var(--bs-primary);
+        }
+
+        /* 🎯 Styles pour la barre des contacts et réseaux sociaux */
+        .top-contact-bar {
+            background-color: #c8c4bf;
+            font-size: 0.85rem;
+        }
+        .top-contact-bar a {
+            transition: color 0.2s ease;
+        }
+        .top-contact-bar .social-icons a:hover {
+            transform: scale(1.15);
+        }
+        .top-contact-bar .btn-whatsapp:hover { color: #25D366 !important; }
+        .top-contact-bar .btn-facebook:hover { color: #1877F2 !important; }
+        .top-contact-bar .btn-tiktok:hover { color: #010101 !important; background-color: #fff; border-radius: 4px; }
+        .top-contact-bar .btn-phone:hover { color: #ec6f45 !important; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Barre de navigation commune Horizontale Style Litera (Marge mb-0 pour coller la sous-barre) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-0">
+        <div class="container">
+            <img src="{% static 'images/logo_cfma.svg' %}" alt="Logo CFMA" width="36" height="36" class="d-inline-block align-top">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    {% if not user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
+
+                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
+<!--                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_contact' %}">Contact</a></li>
+ -->                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
+
+                    {% else %}
+                        <!-- MENU COMPTE CLIENT -->
+                        {% if user.role == 'CLIENT' %}
+                            <li class="nav-item"><a class="nav-link active fw-bold" href="#"><i class="fa-solid fa-screwdriver-wrench me-1"></i>Mes Réparations</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-cubes me-1"></i>Pièces Achetées</a></li>
+                            <li class="nav-item d-none d-lg-flex align-items-center px-2">
+                                <span class="badge bg-secondary me-2">🚗 {{ user.profil_client.nombre_voitures_reparees|default:0 }} réparée(s)</span>
+                                <span class="badge bg-warning text-dark">⏳ Attente : {{ user.profil_client.temps_attente_moyen|default:"0 min" }}</span>
+                            </li>
+                        <!-- MENU SECRÉTAIRE & PATRON -->
+                        {% elif user.role == 'SECRETAIRE' or user.role == 'PATRON' %}
+                            <li class="nav-item"><a class="nav-link active fw-bold" href="#"><i class="fa-solid fa-rectangle-list me-1"></i>Suivi Réparations</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa-solid fa-chart-line me-1"></i>Activité & Équipes
+                                </a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#"><i class="fa-solid fa-users me-2"></i>Performance Commerciaux</a>
+                                    <a class="dropdown-item" href="#"><i class="fa-solid fa-user-gear me-2"></i>Affectation Étudiants</a>
+                                </div>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-basket-shopping me-1"></i>Pièces Commandées</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-hourglass-half me-1"></i>Temps d'attente</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-file-invoice-dollar me-1"></i>Paiements Jour</a></li>
+                        <!-- MENU APPRENANT (ÉTUDIANT) -->
+                        {% elif user.role == 'APPRENANT' %}
+                            <li class="nav-item"><a class="nav-link active fw-bold" href="#"><i class="fa-solid fa-book-open me-1"></i>Cours Suivis</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-gears me-1"></i>Mes Interventions</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-users me-1"></i>Équipe de Travail</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-wrench me-1"></i>Pièces Remplacées</a></li>
+                            <li class="nav-item"><a class="nav-link text-warning fw-bold" href="#"><i class="fa-solid fa-graduation-cap me-1"></i>Notes & Mentions</a></li>
+                            <li class="nav-item d-none d-lg-flex align-items-center px-2">
+                                <span class="badge bg-secondary"><i class="fa-solid fa-business-time me-1"></i>{{ user.profil_etudiant.temps_travail|default:"0h" }}</span>
+                            </li>
+                        <!-- MENU INFORMATICIEN -->
+                        {% elif user.role == 'INFORMATICIEN' %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle active fw-bold text-white" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa-solid fa-square-plus me-1"></i>Édition Contenu
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+
+<!-- 🔐 BLOC DE CONNEXION / DÉCONNEXION DROITE -->
+<!-- <div class="d-flex align-items-center mt-2 mt-lg-0">
+    {% if user.is_authenticated %}
+        <div class="text-white me-3 d-none d-sm-block text-end">
+            <small class="d-block opacity-75">Connecté en tant que :</small>
+            <strong class="text-warning">{{ user.username }}</strong> <span class="badge bg-dark ms-1">{{ user.role }}</span>
+        </div>
+        
+        <!- 🔄 Modification ici : Utilisation d'un formulaire POST requis par Django 5+ ->
+        <form action="{% url 'logout' %}" method="POST" class="d-inline m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light btn-sm px-3">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Se déconnecter
+            </button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-light btn-sm px-3 text-primary fw-bold shadow-sm">
+            <i class="fa-solid fa-right-to-bracket me-1"></i> Se connecter
+        </a>
+    {% endif %}
+</div> -->
+
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- =========================================================================
+        🎯 2. BARRE DE CONTACT & RÉSEAUX SOCIAUX PLACÉE EN DESSOUS (Marge mb-4 respectée)
+    ============================= -->
+
+
+    <!-- =========================================================================
+        🎯 2. BARRE DE CONTACT & RÉSEAUX SOCIAUX PLACÉE EN DESSOUS (Marge mb-4 respectée)
+    ========================================================================== -->
+    <div class="top-contact-bar text-white py-2 shadow-sm mb-4">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <!-- Liens d'appels directs pour le secrétariat -->
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+                <span class="fw-bold text-uppercase tracking-wider small text-muted d-none d-sm-inline">Secrétariat :</span>
+                <a href="tel:+2250546845088" class="text-white text-decoration-none btn-phone small">
+                    <i class="fa-solid fa-phone text-primary me-1"></i>+225 05 46 84 50 88
+                </a>
+                <a href="tel:+2250709103654" class="text-white text-decoration-none btn-phone small">
+                    <i class="fa-solid fa-phone text-primary me-1"></i>+225 07 09 10 36 54
+                </a>
+            </div>
+            
+
+            <!-- Se déconnecter !!-->
+            <!-- Liens directs vers les applications de Réseaux Sociaux -->
+            <div class="d-flex align-items-center gap-3 social-icons mt-1 mt-sm-0">
+ <a href="https://wa.me" target="_blank" class="text-white text-decoration-none btn-whatsapp px-1" title="Discuter sur WhatsApp">
+    <i class="fa-brands fa-whatsapp fa-lg"></i>
+</a>
+
+                <a href="https://www.facebook.com/Centre.cfma/" target="_blank" class="text-white text-decoration-none btn-facebook px-1" title="Nous suivre sur Facebook">
+                    <i class="fa-brands fa-facebook fa-lg"></i>
+                </a>
+                <a href="https://www.tiktok.com/@cfma.garage.autom?_r=1&_t=ZS-990hb7xeFlY" target="_blank" class="text-white text-decoration-none btn-tiktok px-1" title="Regarder nos vidéos TikTok">
+                    <i class="fa-brands fa-tiktok fa-lg"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<!-- Oui Miss  Mariama ajoutez si possible le *Lavage auto* et 
+ le *Quick Service* , 
+ la *Vidange* 
+ le *Diagnostic* , 
+ *formation en Mécanique*
+ -->    
+
+    <!-- ZONE DE RENDU DYNAMIQUE DES PAGES -->
+    <main class="py-4">
+        <div class="container">
+            <!-- ⚠️ UNIFICATION DES BLOCS POUR ÉVITER TOUT SYNTAX ERROR FUTURE -->
+            {% block dashboard_content %}{% endblock dashboard_content %}
+            {% block content %}{% endblock content %}
+        </div>
+    </main>
+
+    <!-- Pied de page Litera -->
+    <footer class="bg-light text-center py-4 mt-5 border-top">
+        <div class="container">
+            <p class="mb-0 text-muted small">&copy; 2026 CENTRE DE FORMATION AUX METIERS DE L'AUTOMOBILE - Centre de Diagnostic et de Formation Automobile.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts officiels indispensables pour faire fonctionner les Dropdowns Litera -->
+    <script src="https://jsdelivr.net"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Script indispensable pour faire tourner le carrousel Bootstrap 5 -->
+    <script src="https://jsdelivr.net"></script>
+
+
+</body>
+</html>

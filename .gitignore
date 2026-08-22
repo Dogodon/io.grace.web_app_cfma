@@ -1,0 +1,9 @@
+.env
+*.sqlite3
+__pycache__/
+venv/
+
+
+DEBUG=True
+SECRET_KEY=django-insecure-149!gkj$fcjd_28#ppr5l)xq2^pw-uklkxg89q5*^su0q@8s3+
+DATABASE_URL=postgresql://cfma_pg_user:gUqWuh0x5RYSmYp2JUSVpjjnCFvVvAa8@dpg-da4mkdc9v7es738lbim0-a.oregon-postgres.render.com/cfma_pg_db

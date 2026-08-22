@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="fw-bold text-primary mb-4 border-bottom pb-2">
+    <i class="fa-solid fa-newspaper me-2"></i>Bienvenue Ajouter véhicule : FORMULAIRE
+</h2>
+
+<div class="row">
+    
+</div>
+
+<!-- =========================================================================
+    STYLE & LOGIQUE INTERACTIVE
+========================================================================== -->
+<style>
+    .card:hover {
+        transform: translateY(-3px);
+    }
+    /* Classe utilitaire pour animer l'apparition du texte */
+    .fade-in-text {
+        opacity: 1 !important;
+    }
+    /* Empêche les sauts de ligne doublés induits par linebreaksbr dans des blocs compacts */
+    .actualite-texte-box br {
+        content: "";
+        margin: 2px 0;
+        display: block;
+    }
+</style>
+
+
+<!-- <div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-car me-2"></i> Nouvelle Entrée Véhicule</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <!- SECTION VÉHICULE & ENVOYEUR ->
+                    <div class="col-md-6 border-end">
+                        <h6 class="text-primary fw-bold mb-3"><i class="fa-solid fa-key me-1"></i> 1. Le Véhicule</h6>
+                        {{ vehicule_form.as_p }}
+                        
+                        <h6 class="text-primary fw-bold mt-4 mb-3"><i class="fa-solid fa-user me-1"></i> 2. Celui qui dépose (Envoyeur)</h6>
+                        {{ envoyeur_form.as_p }}
+
+                        <!- CASE À COCHER DYNAMIQUE ->
+                        <div class="form-check form-switch my-4 p-3 bg-light rounded border">
+                            <input class="form-check-input ms-0 me-2" type="checkbox" id="checkAutreRecuperateur" name="autre_recuperateur">
+                            <label class="form-check-label fw-bold text-dark" for="checkAutreRecuperateur">
+                                La personne qui récupérera le véhicule est différente
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!- SECTION RÉCUPÉRATEUR (Masquée par défaut) ->
+                    <div class="col-md-6 d-none" id="sectionRecuperateur">
+                        <h6 class="text-primary fw-bold mb-3"><i class="fa-solid fa-user-gear me-1"></i> 3. Celui qui récupère (Mandataire)</h6>
+                        {{ recuperateur_form.as_p }}
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-inline-flex gap-2 mt-2">
+                    <a href="{% url 'home' %}" class="btn btn-white-custom btn-sm px-3 shadow-sm">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Annuler
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-sm px-3 shadow-sm">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Valider l'Entrée
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!- SCRIPT JS POUR L'AFFICHAGE DYNAMIQUE ->
+<script>
+    document.getElementById('checkAutreRecuperateur').addEventListener('change', function() {
+        const section = document.getElementById('sectionRecuperateur');
+        if(this.checked) {
+            section.classList.remove('d-none');
+        } else {
+            section.classList.add('d-none');
+        }
+    });
+</script> -->
+
+{% endblock %}
+
+
+
+

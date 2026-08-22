@@ -1,0 +1,70 @@
+<!-- templates/vitrine/index.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Section Héro / Bannière principale -->
+<div class="bg-light py-5 mb-5 border-bottom">
+    <div class="container py-4">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="display-4 fw-bold text-dark mb-3">Diagnostic Automobile Expert & Formations Pro</h1>
+                <p class="lead text-muted mb-4">Confiez votre véhicule à des experts certifiés ou formez-vous aux dernières technologies de diagnostic électronique embarqué.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a href="#" class="btn btn-primary btn-lg px-4 me-md-2">Prendre RDV Diagnostic</a>
+                    <a href="#" class="btn btn-outline-secondary btn-lg px-4">Découvrir nos Formations</a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-center">
+                <i class="fa-solid fa-laptop-medical text-primary" style="font-size: 12rem;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <div class="row g-4">
+
+
+                <div class="carousel-item active" data-bs-interval="4000">
+                    <div style="height: 900;" class="d-flex align-items-center justify-content-center position-relative">
+                        <img src="{% static 'images/img4.svg' %}" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: cover; filter: brightness(50%);" alt="Pôle Diagnostic">
+                        
+                    </div>
+                </div>
+
+            </div>
+
+<!-- Section des deux pôles d'activité -->
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Carte Pôle Atelier / Clients -->
+        <div class="col-md-6">
+            <div class="card h-100 border-light shadow-sm">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="text-primary mb-3"><i class="fa-solid fa-wrench fa-2x"></i></div>
+                    <h3 class="card-title fw-bold">Espace Propriétaires & Clients</h3>
+                    <p class="card-text text-muted">Suivez l'état de votre véhicule en temps réel durant son diagnostic dans nos ateliers, demandez un devis ou planifiez votre prochaine intervention.</p>
+                    <div class="mt-auto pt-3">
+                        <a href="#" class="btn btn-outline-primary w-100">Accéder au Portail Client</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carte Pôle Académie / Apprenants -->
+        <div class="col-md-6">
+            <div class="card h-100 border-light shadow-sm">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="text-success mb-3"><i class="fa-solid fa-graduation-cap fa-2x"></i></div>
+                    <h3 class="card-title fw-bold">Espace Étudiants & Apprenants</h3>
+                    <p class="card-text text-muted">Accédez à votre espace de formation, consultez votre planning de cours théoriques et pratiques, et téléchargez vos modules sur le diagnostic automobile.</p>
+                    <div class="mt-auto pt-3">
+                        <a href="#" class="btn btn-outline-success w-100">Accéder au Portail Apprenant</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

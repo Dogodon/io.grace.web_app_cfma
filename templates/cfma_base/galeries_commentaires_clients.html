@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-4">
+    <!-- Entête de la page Atelier -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="fa-solid fa-comments me-2"></i>Le Fil de commentaires Clients
+            </h2>
+            <p class="text-muted mb-0">Découvrez les retours d'expérience en direct de nos ateliers mécaniques.</p>
+        </div>
+        <a href="{% url 'cfma_base:home' %}" class="btn btn-outline-secondary rounded-pill btn-sm">
+            <i class="fa-solid fa-arrow-left me-1"></i>Retour à l'accueil
+        </a>
+    </div>
+
+    <!-- Grille des Cartes de Commentaires Clients -->
+    <div class="row">
+        {% for com in commentaires %}
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100 overflow-hidden" style="transition: transform 0.2s ease;">
+                    
+                    <!-- 🎯 1️⃣ CARROUSEL INTERACTIF ADAPTÉ SUR-MESURE PAR CLIENT -->
+                    <div class="custom-card-carousel" id="carouselContainerClient{{ com.id }}" data-client-id="{{ com.id }}" data-slide-index="0" style="position: relative; height: 220px; background-color: #212529;">
+                        <div class="custom-card-carousel-inner h-100 position-relative overflow-hidden">
+                            
+                            <!-- Image 1 Obligatoire -->
+                            <div class="custom-card-slide active w-100 h-100 position-absolute top-0 start-0">
+                                <img src="{{ com.image1.url }}" alt="Illustration 1" class="w-100 h-100 object-fit-cover">
+                            </div>
+                            
+                            <!-- Images optionnelles suivantes -->
+                            {% if com.image2 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ com.image2.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                            {% if com.image3 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ com.image3.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                            {% if com.image4 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ com.image4.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                            {% if com.image5 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ com.image5.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                        
+                        </div>
+                        
+                        <!-- Flèches d'action personnalisées -->
+                        {% if com.image2 %}
+                            <button class="custom-card-nav prev" type="button" onclick="moveClientSlide('{{ com.id }}', -1)">❮</button>
+                            <button class="custom-card-nav next" type="button" onclick="moveClientSlide('{{ com.id }}', 1)">❯</button>
+                            
+                            <!-- Points de navigation du carrousel -->
+                            <div class="custom-card-dots">
+                                <span class="card-dot active" onclick="currentClientSlide('{{ com.id }}', 0)"></span>
+                                {% if com.image2 %}<span class="card-dot" onclick="currentClientSlide('{{ com.id }}', 1)"></span>{% endif %}
+                                {% if com.image3 %}<span class="card-dot" onclick="currentClientSlide('{{ com.id }}', 2)"></span>{% endif %}
+                                {% if com.image4 %}<span class="card-dot" onclick="currentClientSlide('{{ com.id }}', 3)"></span>{% endif %}
+                                {% if com.image5 %}<span class="card-dot" onclick="currentClientSlide('{{ com.id }}', 4)"></span>{% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Corps de la carte -->
+                    <div class="card-body d-flex flex-column p-4 bg-white">
+                        <div class="mb-2">
+                            <small class="text-muted fw-semibold">
+                                <i class="fa-solid fa-screwdriver-wrench me-1 text-primary"></i>Prestation : {{ com.titre_prestation }}
+                            </small>
+                        </div>
+                        
+                        <h4 class="fw-bold mb-1 text-dark text-uppercase small">
+                            {{ com.auteur }}
+                        </h4>
+                        <p class="text-muted small mb-3 fw-semibold"><i class="fa-solid fa-car me-1"></i>{{ com.statut_vehicule }}</p>
+                        
+                        <!-- 🎯 2️⃣ ZONE DE TEXTE INTELLIGENTE AVEC DÉPLIEMENT AU CLIC -->
+                        <div class="text-muted small mb-0 flex-grow-1 commentaire-texte-box">
+                            <span class="texte-court">"{{ com.commentaire|truncatewords:40|linebreaksbr }}"</span>
+                            
+                            {% if com.commentaire|wordcount > 40 %}
+                                <span class="texte-complet d-none opacity-0" style="transition: opacity 0.4s ease;">
+                                    "{{ com.commentaire|linebreaksbr }}"
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if com.commentaire|wordcount > 40 %}
+                            <div class="mt-3 pt-2 border-top">
+                                <button type="button" class="btn btn-link btn-sm text-primary p-0 fw-bold text-decoration-none btn-lire-suite" onclick="toggleCommentaire(this)">
+                                    <span>Lire la suite</span> <i class="fa-solid fa-arrow-right ms-1 small toggle-icone"></i>
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning text-center fw-bold shadow-sm p-4">
+                    <i class="fa-solid fa-circle-exclamation me-2 fa-xl"></i>Aucun commentaire client publié récemment.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- =========================================================================
+    CSS SUR-MESURE POUR LES TRANSITIONS SANS BOOTSTRAP
+========================================================================== -->
+<style>
+    .card:hover {
+        transform: translateY(-3px);
+    }
+    .custom-card-slide {
+        transition: opacity 0.5s ease-in-out;
+        z-index: 1;
+        opacity: 0;
+    }
+    .custom-card-slide.active {
+        opacity: 1 !important;
+        z-index: 2;
+    }
+    .custom-card-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.4);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        z-index: 10;
+        transition: background 0.2s;
+        border-radius: 50%;
+        margin: 0 10px;
+        font-weight: bold;
+    }
+    .custom-card-nav:hover { background: rgba(0, 0, 0, 0.8); }
+    .custom-card-nav.prev { left: 0; }
+    .custom-card-nav.next { right: 0; }
+
+    .custom-card-dots {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        display: flex;
+        gap: 6px;
+    }
+    .card-dot {
+        width: 8px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .card-dot.active { background: #ffffff; width: 16px; border-radius: 4px; }
+    
+    .fade-in-text { opacity: 1 !important; }
+</style>
+
+<!-- =========================================================================
+    SCRIPT INTERACTIF MULTI-CARROUSSEL CLIENTS CORRIGÉ & SÉCURISÉ
+========================================================================== -->
+
+<!-- =========================================================================
+    SCRIPT INTERACTIF MULTI-CARROUSSEL CLIENTS CORRIGÉ & SÉCURISÉ
+========================================================================== -->
+<script>
+    const clientTimers = {};
+
+    function showClientSlide(clientId, index) {
+        // Concaténation classique pour éviter les conflits de guillemets
+        const container = document.getElementById('carouselContainerClient' + clientId);
+        if (!container) return;
+
+        const slides = container.querySelectorAll('.custom-card-slide');
+        const dots = container.querySelectorAll('.card-dot');
+        
+        let activeIndex = parseInt(index);
+        if (activeIndex >= slides.length) activeIndex = 0;
+        if (activeIndex < 0) activeIndex = slides.length - 1;
+        
+        container.setAttribute('data-slide-index', activeIndex);
+        
+        slides.forEach((slide, i) => {
+            if (i === activeIndex) {
+                slide.classList.add('active');
+                if (dots[i]) dots[i].classList.add('active');
+            } else {
+                slide.classList.remove('active');
+                if (dots[i]) dots[i].classList.remove('active');
+            }
+        });
+    }
+
+    function moveClientSlide(clientId, step) {
+        clearInterval(clientTimers[clientId]);
+        const container = document.getElementById('carouselContainerClient' + clientId);
+        if (!container) return;
+        let currentIndex = parseInt(container.getAttribute('data-slide-index'));
+        currentIndex += step;
+        showClientSlide(clientId, currentIndex);
+        resetClientTimer(clientId);
+    }
+
+    function currentClientSlide(clientId, index) {
+        clearInterval(clientTimers[clientId]);
+        showClientSlide(clientId, index);
+        resetClientTimer(clientId);
+    }
+
+    function resetClientTimer(clientId) {
+        const container = document.getElementById('carouselContainerClient' + clientId);
+        if (!container) return;
+        const slides = container.querySelectorAll('.custom-card-slide');
+        
+        if (slides.length > 1) {
+            clientTimers[clientId] = setInterval(() => {
+                let currentIndex = parseInt(container.getAttribute('data-slide-index'));
+                currentIndex += 1;
+                showClientSlide(clientId, currentIndex);
+            }, 4000);
+        }
+    }
+
+    function toggleCommentaire(btn) {
+        const cardBody = btn.closest('.card-body');
+        const texteCourt = cardBody.querySelector('.texte-court');
+        const texteComplet = cardBody.querySelector('.texte-complet');
+        const btnText = btn.querySelector('span');
+        const icone = btn.querySelector('.toggle-icone');
+
+        if (texteComplet.classList.contains('d-none')) {
+            texteCourt.classList.add('d-none'); 
+            texteComplet.classList.remove('d-none'); 
+            setTimeout(() => {
+                texteComplet.classList.add('fade-in-text');
+            }, 10);
+            btnText.textContent = "Réduire";
+            icone.classList.replace('fa-arrow-right', 'fa-arrow-up');
+        } else {
+            texteComplet.classList.remove('fade-in-text');
+            texteComplet.classList.add('d-none');
+            texteCourt.classList.remove('d-none');
+            btnText.textContent = "Lire la suite";
+            icone.classList.replace('fa-arrow-up', 'fa-arrow-right');
+            btn.closest('.card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const carousels = document.querySelectorAll('.custom-card-carousel');
+        carousels.forEach(carousel => {
+            const id = carousel.getAttribute('data-client-id');
+            resetClientTimer(id);
+        });
+    });
+</script>
+
+{% endblock %}

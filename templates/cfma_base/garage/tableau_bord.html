@@ -1,0 +1,132 @@
+<!-- templates/sfma_base/garage/tableau_bord.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark border-start border-4 border-warning ps-3" style="border-color: #FF6600 !important;">Suivi des Entrées / Sorties</h2>
+<!-- templates/sfma_base/garage/tableau_bord.html (Ligne 8 corrigée) -->
+<!-- 🎯 Correction Ligne 8 : ajout de sfma_base: -->
+<a href="{% url 'sfma_base:enregistrer_entree' %}" class="btn px-4 py-2 fw-bold text-decoration-none transition" style="background-color: #ffffff; border: 2px solid #FF6600; color: #FF6600;">
+            <i class="fa-solid fa-plus me-2"></i>Nouvelle Entrée Atelier
+        </a>
+    </div>
+
+    <!-- BARRE DE RECHERCHE DYNAMIQUE (LIVE-SEARCH) -->
+    <div class="card border-0 shadow-sm p-3 mb-4 bg-white">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0 text-muted">
+                <i class="fa-solid fa-magnifying-glass" style="color: #FF6600;"></i>
+            </span>
+            <input type="text" 
+                   id="liveSearchInput" 
+                   class="form-control border-start-0 ps-0" 
+                   placeholder="Rechercher par immatriculation, nom déposant, nom récupérateur, marque, modèle..."
+                   style="box-shadow: none;">
+        </div>
+    </div>
+
+    <!-- Section Véhicules Présents -->
+    <h4 class="fw-bold text-secondary mb-3">
+        <i class="fa-solid fa-warehouse me-2 text-warning" style="color: #FF6600 !important;"></i>Actuellement à l'Atelier
+    </h4>
+    
+    <div class="row" id="vehiculesContainer">
+        {% for mvt in en_atelier %}
+            <div class="col-md-4 mb-4 carte-vehicule" 
+                 data-immat="{% if mvt.vehicule_connu %}{{ mvt.vehicule_connu.immatriculation }}{% else %}{{ mvt.immatriculation_manuelle }}{% endif %}"
+                 data-client="{{ mvt.depose_nom }} {{ mvt.depose_prenom|default_if_none:'' }}"
+                 data-retrait="{{ mvt.retrait_nom|default_if_none:'' }} {{ mvt.retrait_prenom|default_if_none:'' }}"
+                 data-modele="{% if mvt.vehicule_connu %}{{ mvt.vehicule_connu.marque }} {{ mvt.vehicule_connu.modele }}{% else %}Passage{% endif %}">
+                
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="position-relative" style="height: 160px; background-color: #212529;">
+                        {% if mvt.photo_voiture %}
+                            <img src="{{ mvt.photo_voiture.url }}" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #FF6600, #be532e); opacity: 0.9;">
+                                <i class="fa-solid fa-car text-white fa-3x"></i>
+                            </div>
+                        {% endif %}
+                        <span class="badge position-absolute top-0 end-0 m-3 px-3 py-2 fw-bold text-white" style="background-color: #FF6600;">{{ mvt.niveau_carburant_entree }} Carburant</span>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h5 class="fw-bold mb-1 text-dark">
+                            {% if mvt.vehicule_connu %}{{ mvt.vehicule_connu.marque }} {{ mvt.vehicule_connu.modele }}{% else %}Véhicule de Passage{% endif %}
+                        </h5>
+                        <p class="text-primary fw-bold mb-2 small"><i class="fa-solid fa-id-card me-1"></i>{% if mvt.vehicule_connu %}{{ mvt.vehicule_connu.immatriculation }}{% else %}{{ mvt.immatriculation_manuelle }}{% endif %}</p>
+                        
+                        <div class="small text-muted mb-3 border-top pt-2">
+                            <div><i class="fa-solid fa-user me-1"></i> Déposé par: <strong>{{ mvt.depose_nom }}</strong></div>
+                            <div><i class="fa-solid fa-clock me-1"></i> Arrivée: {{ mvt.date_entree|date:"d/m à H:i" }}</div>
+                            <div><i class="fa-solid fa-gauge me-1"></i> KM Entrée: {{ mvt.kilometrage_entree }} km</div>
+                        </div>
+                        
+<!-- Ligne 59 corrigée -->
+<!-- 🎯 Correction Ligne 8 : ajout de sfma_base: -->
+<!-- 🎯 Correction Ligne 59 : ajout de sfma_base: -->
+<a href="{% url 'sfma_base:enregistrer_sortie' mvt.pk %}" class="btn btn-sm mt-auto w-100 fw-bold" style="background-color: #FF6600; color: #ffffff; border: none;">
+                            <i class="fa-solid fa-arrow-right-from-bracket me-1"></i>Valider Sortie (Restituer)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12" id="noVehiculeAlert">
+                <div class="alert alert-light text-center border p-4 shadow-sm text-muted">
+                    <i class="fa-solid fa-circle-info text-warning fa-xl me-2" style="color: #FF6600 !important;"></i> Aucun véhicule à l'atelier pour le moment.
+                </div>
+            </div>
+        {% endfor %}
+        
+        <!-- MESSAGE SI RECHERCHE SANS RÉSULTATS -->
+        <div class="col-12 d-none" id="noMatchAlert">
+            <div class="alert alert-warning text-center border p-4 shadow-sm fw-bold">
+                <i class="fa-solid fa-triangle-exclamation fa-xl me-2" style="color: #FF6600 !important;"></i> Aucun véhicule ne correspond à votre recherche.
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control:focus {
+        border-color: #FF6600 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.2) !important;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('liveSearchInput');
+    const cards = document.querySelectorAll('.carte-vehicule');
+    const noMatchAlert = document.getElementById('noMatchAlert');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            const filterValue = e.target.value.toLowerCase().trim();
+            let hasVisibleCard = false;
+
+            cards.forEach(card => {
+                const immat = card.getAttribute('data-immat').toLowerCase();
+                const client = card.getAttribute('data-client').toLowerCase();
+                const retrieval = card.getAttribute('data-retrait').toLowerCase();
+                const modele = card.getAttribute('data-modele').toLowerCase();
+
+                if (immat.includes(filterValue) || client.includes(filterValue) || retrieval.includes(filterValue) || modele.includes(filterValue)) {
+                    card.classList.remove('d-none');
+                    hasVisibleCard = true;
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
+            if (!hasVisibleCard && filterValue !== '') {
+                noMatchAlert.classList.remove('d-none');
+            } else {
+                noMatchAlert.classList.add('d-none');
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

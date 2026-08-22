@@ -1,0 +1,137 @@
+/* static/css/custom_admin.css */
+
+/* 🎯 1. VARIABLES INITIALES */
+:root {
+    --orange-sfma: #FF6600;
+}
+
+/* 🎯 2. TOUS LES BOUTONS DU SITE (FOND BLANC, TEXTE ORANGE ET BORDURE ORANGE) */
+.btn-primary, .btn-success, .btn-info, .btn-orange,
+.btn-primary:not(:disabled):not(.disabled),
+.btn-success:not(:disabled):not(.disabled),
+.btn-info:not(:disabled):not(.disabled) {
+    background-color: #ffffff !important;
+    border: 2px solid var(--orange-sfma) !important;
+    color: var(--orange-sfma) !important;
+    font-weight: bold !important;
+}
+
+/* Effet au survol des boutons : Inversion (Fond Orange, Texte Blanc) */
+.btn-primary:hover, .btn-success:hover, .btn-info:hover,
+.btn-primary:focus, .btn-success:focus, .btn-info:focus {
+    background-color: var(--orange-sfma) !important;
+    border-color: var(--orange-sfma) !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+
+/* Badges d'état inversés */
+.badge-primary, .badge-success, .badge-info {
+    background-color: rgba(255, 102, 0, 0.1) !important;
+    color: var(--orange-sfma) !important;
+    border: 1px solid var(--orange-sfma) !important;
+}
+
+/* 🎯 3. LE PANNEAU LATÉRAL DROIT : FOND BLANC ET TEXTES/BOUTONS ORANGE */
+.control-sidebar,
+.control-sidebar-dark,
+.control-sidebar-content,
+.control-sidebar::before,
+.control-sidebar-dark .control-sidebar-content {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+    border-left: 1px solid #e0e0e0 !important;
+}
+
+/* On force tous les textes et étiquettes internes du panneau droit en noir/gris sombre */
+.control-sidebar *,
+.control-sidebar-dark *,
+.control-sidebar-content * {
+    color: #333333 !important;
+}
+
+/* On isole les titres majeurs, icônes et liens en Orange */
+.control-sidebar h1, 
+.control-sidebar h2, 
+.control-sidebar h3, 
+.control-sidebar h5,
+.control-sidebar label,
+.control-sidebar th,
+.control-sidebar a,
+.control-sidebar i {
+    color: var(--orange-sfma) !important;
+}
+
+/* Liens au survol dans le panneau droit */
+.control-sidebar a:hover {
+    color: #e65c00 !important;
+    text-decoration: underline !important;
+}
+
+/* Bordures intérieures du panneau droit remises en gris clair propre */
+.control-sidebar .nav-tabs,
+.control-sidebar .mb-4,
+.control-sidebar-dark .nav-tabs {
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+/* Cases à cocher du panneau droit en Orange */
+.control-sidebar input[type="checkbox"] {
+    accent-color: var(--orange-sfma) !important;
+}
+
+/* 🎯 4. BARRE DU HAUT (Navbar) */
+.main-header.navbar {
+    background-color: var(--orange-sfma) !important;
+    border-bottom: 1px solid #ffffff !important;
+}
+.main-header.navbar .nav-link, 
+.main-header.navbar .nav-link i {
+    color: #ffffff !important;
+}
+
+/* 🎯 5. BARRE LATÉRALE GAUCHE (Sidebar) */
+.main-sidebar {
+    background-color: #ffffff !important;
+    border-right: 1px solid #e0e0e0;
+}
+.brand-link {
+    background-color: var(--orange-sfma) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid #ffffff !important;
+}
+.sidebar a {
+    color: #333333 !important;
+}
+
+/* Élément actif dans le menu de gauche */
+.nav-sidebar .nav-link.active {
+    background-color: var(--orange-sfma) !important;
+    color: #ffffff !important;
+}
+.nav-sidebar .nav-link.active i {
+    color: #ffffff !important;
+}
+.nav-sidebar .nav-link:hover {
+    background-color: rgba(255, 102, 0, 0.1) !important;
+    color: var(--orange-sfma) !important;
+}
+
+/* 🎯 6. TITRES DE SECTIONS ET LIENS GLOBAUX */
+h1, h2, h3, h4, .content-header h1 {
+    color: #212529 !important;
+}
+a {
+    color: var(--orange-sfma);
+}
+a:hover {
+    color: #e65c00;
+}
+
+/* 🎯 7. PAGE DE CONNEXION (Login Screen) */
+.login-page {
+    background: linear-gradient(135deg, var(--orange-sfma) 0%, #ffffff 100%) !important;
+}
+.login-box .card-primary.card-outline {
+    border-top: 3px solid var(--orange-sfma) !important;
+}

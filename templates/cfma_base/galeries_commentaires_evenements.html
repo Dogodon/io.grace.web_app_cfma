@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-4">
+    <!-- Entête de la page Événements -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h2 class="fw-bold text-success mb-1">
+                <i class="fa-solid fa-graduation-cap me-2"></i>Le Fil de commentaires Événements
+            </h2>
+            <p class="text-muted mb-0">Découvrez les retours sur les événements de notre Académie CFMA.</p>
+        </div>
+        <a href="{% url 'cfma_base:home' %}" class="btn btn-outline-secondary rounded-pill btn-sm">
+            <i class="fa-solid fa-arrow-left me-1"></i>Retour à l'accueil
+        </a>
+    </div>
+
+    <!-- Grille des Cartes d'Événements -->
+<div class="row">
+    {% for eve in evenements %}
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100 overflow-hidden" style="transition: transform 0.2s ease;">
+                
+                <!-- 🎯 1️⃣ CARROUSEL INTERACTIF ADAPTÉ SUR-MESURE PAR ÉVÉNEMENT -->
+                <div class="custom-card-carousel" id="carouselContainer{{ eve.id }}" data-event-id="{{ eve.id }}" data-slide-index="0" style="position: relative; height: 240px; background-color: #212529;">
+                    <div class="custom-card-carousel-inner h-100 position-relative overflow-hidden">
+                        
+                        <!-- Image 1 Obligatoire -->
+                        <div class="custom-card-slide active w-100 h-100 position-absolute top-0 start-0">
+                            <img src="{{ eve.image1.url }}" alt="Illustration" class="w-100 h-100 object-fit-cover">
+                        </div>
+                        
+                        <!-- Images optionnelles suivantes -->
+                        {% if eve.image2 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ eve.image2.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                        {% if eve.image3 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ eve.image3.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                        {% if eve.image4 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ eve.image4.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                        {% if eve.image5 %}<div class="custom-card-slide w-100 h-100 position-absolute top-0 start-0 opacity-0"><img src="{{ eve.image5.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                    
+                    </div>
+                    
+                    <!-- Flèches d'action personnalisées (visibles si au moins une image optionnelle) -->
+                    {% if eve.image2 %}
+                        <button class="custom-card-nav prev" type="button" onclick="moveCardSlide('{{ eve.id }}', -1)">❮</button>
+                        <button class="custom-card-nav next" type="button" onclick="moveCardSlide('{{ eve.id }}', 1)">❯</button>
+                        
+                        <!-- Points de navigation du carrousel -->
+                        <div class="custom-card-dots">
+                            <span class="card-dot active" onclick="currentCardSlide('{{ eve.id }}', 0)"></span>
+                            {% if eve.image2 %}<span class="card-dot" onclick="currentCardSlide('{{ eve.id }}', 1)"></span>{% endif %}
+                            {% if eve.image3 %}<span class="card-dot" onclick="currentCardSlide('{{ eve.id }}', 2)"></span>{% endif %}
+                            {% if eve.image4 %}<span class="card-dot" onclick="currentCardSlide('{{ eve.id }}', 3)"></span>{% endif %}
+                            {% if eve.image5 %}<span class="card-dot" onclick="currentCardSlide('{{ eve.id }}', 4)"></span>{% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Corps de la Carte -->
+                <div class="card-body d-flex flex-column p-4 bg-white">
+                    <div class="mb-2 d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-success text-uppercase small">
+                            <i class="fa-solid fa-bookmark me-1"></i>{{ eve.titre_evenement }}
+                        </span>
+                        <span class="badge {% if eve.statut_evenement == 'en_cours' %}bg-success{% else %}bg-secondary{% endif %} rounded-pill extra-small">
+                            {{ eve.get_statut_evenement_display }}
+                        </span>
+                    </div>
+
+                    <!-- 🎯 2️⃣ ZONE DE TEXTE INTELLIGENTE AVEC DÉPLIEMENT AU CLIC -->
+                    <div class="text-muted small mb-0 flex-grow-1 commentaire-texte-box">
+                        <span class="texte-court">"{{ eve.commentaire|truncatewords:40|linebreaksbr }}"</span>
+                        
+                        {% if eve.commentaire|wordcount > 40 %}
+                            <span class="texte-complet d-none opacity-0" style="transition: opacity 0.4s ease;">
+                                "{{ eve.commentaire|linebreaksbr }}"
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if eve.commentaire|wordcount > 40 %}
+                        <div class="mt-3 pt-2">
+                            <button type="button" class="btn btn-link btn-sm text-success p-0 fw-bold text-decoration-none btn-lire-suite" onclick="toggleCommentaire(this)">
+                                <span>Lire la suite</span> <i class="fa-solid fa-arrow-right ms-1 small toggle-icone"></i>
+                            </button>
+                        </div>
+                    {% endif %}
+
+                    <!-- 🎯 3️⃣ SIGNATURE EN BAS DE CARTE -->
+                    <div class="mt-3 pt-3 border-top bg-light p-2 rounded-2">
+                        <strong class="text-dark text-uppercase small d-block">
+                            <i class="fa-solid fa-user me-2 text-success"></i>{{ eve.acteurs }}
+                        </strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- =========================================================================
+    CSS SUR-MESURE POUR LES TRANSITIONS SANS BOOTSTRAP
+========================================================================== -->
+<style>
+    /* Style global des slides de cartes */
+    .custom-card-slide {
+        transition: opacity 0.5s ease-in-out;
+        z-index: 1;
+        opacity: 0;
+    }
+    .custom-card-slide.active {
+        opacity: 1 !important;
+        z-index: 2;
+    }
+
+    /* Flèches de navigation */
+    .custom-card-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.4);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        cursor: pointer;
+        z-index: 10;
+        transition: background 0.2s;
+        border-radius: 50%;
+        margin: 0 10px;
+        font-weight: bold;
+    }
+    .custom-card-nav:hover { background: rgba(0, 0, 0, 0.8); }
+    .custom-card-nav.prev { left: 0; }
+    .custom-card-nav.next { right: 0; }
+
+    /* Indication des points (dots) */
+    .custom-card-dots {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+        display: flex;
+        gap: 6px;
+    }
+    .card-dot {
+        width: 8px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .card-dot.active { background: #ffffff; width: 16px; border-radius: 4px; }
+</style>
+
+<!-- =========================================================================
+    SCRIPT INTERACTIF MULTI-CARROUSSEL AUTOMATIQUE (INDÉPENDANT)
+========================================================================== -->
+<script>
+    const cardTimers = {};
+
+    function showCardSlide(eventId, index) {
+        const container = document.getElementById(`carouselContainer${eventId}`);
+        if (!container) return;
+
+        const slides = container.querySelectorAll('.custom-card-slide');
+        const dots = container.querySelectorAll('.card-dot');
+        
+        let activeIndex = parseInt(index);
+        if (activeIndex >= slides.length) activeIndex = 0;
+        if (activeIndex < 0) activeIndex = slides.length - 1;
+        
+        container.setAttribute('data-slide-index', activeIndex);
+        
+        slides.forEach((slide, i) => {
+            if (i === activeIndex) {
+                slide.classList.add('active');
+                if (dots[i]) dots[i].classList.add('active');
+            } else {
+                slide.classList.remove('active');
+                if (dots[i]) dots[i].classList.remove('active');
+            }
+        });
+    }
+
+    function moveCardSlide(eventId, step) {
+        clearInterval(cardTimers[eventId]);
+        const container = document.getElementById(`carouselContainer${eventId}`);
+        let currentIndex = parseInt(container.getAttribute('data-slide-index'));
+        currentIndex += step;
+        showCardSlide(eventId, currentIndex);
+        resetCardTimer(eventId);
+    }
+
+    function currentCardSlide(eventId, index) {
+        clearInterval(cardTimers[eventId]);
+        showCardSlide(eventId, index);
+        resetCardTimer(eventId);
+    }
+
+    function resetCardTimer(eventId) {
+        const container = document.getElementById(`carouselContainer${eventId}`);
+        if (!container) return;
+        const slides = container.querySelectorAll('.custom-card-slide');
+        
+        if (slides.length > 1) {
+            cardTimers[eventId] = setInterval(() => {
+                let currentIndex = parseInt(container.getAttribute('data-slide-index'));
+                currentIndex += 1;
+                showCardSlide(eventId, currentIndex);
+            }, 4000); // Fait tourner l'image toutes les 4 secondes
+        }
+    }
+
+    // Lance le défilement automatique indépendant pour chaque carte au chargement de la page
+    document.addEventListener("DOMContentLoaded", function () {
+        const carousels = document.querySelectorAll('.custom-card-carousel');
+        carousels.forEach(carousel => {
+            const id = carousel.getAttribute('data-event-id');
+            resetCardTimer(id);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="p-5 mb-5 bg-light rounded-3 border shadow-sm text-center">
+    <h1 class="display-4 fw-bold text-primary">Nos Cursus Professionnels</h1>
+    <p class="fs-5 text-muted col-md-8 mx-auto">Formations d'excellence gérées en temps réel par notre équipe pédagogique.</p>
+</div>
+
+<div class="row">
+    {% for formation in formations %}
+        <div class="col-md-4 mb-4">
+            <div class="card border-primary shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="badge bg-warning text-dark px-2 py-1">{{ formation.badge_niveau }}</span>
+                        <span class="badge bg-light text-dark border">{{ formation.duree }}</span>
+                    </div>
+                    <h4 class="card-title fw-bold text-primary">{{ formation.titre }}</h4>
+                    <p class="card-text text-muted small">{{ formation.description_generale }}</p>
+                    
+                    <ul class="list-unstyled small text-dark my-3">
+                        {% for comp in formation.liste_competences %}
+                            <li><i class="fa-solid fa-check text-success me-2"></i>{{ comp }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 pb-3">
+                    <a href="{% url 'inscription' %}" class="btn btn-primary btn-sm rounded-pill w-100 fw-bold">Déposer ma candidature</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info text-center">Aucune formation enregistrée dans le catalogue pour le moment.</div>
+    {% endfor %}
+</div>
+{% endblock %}

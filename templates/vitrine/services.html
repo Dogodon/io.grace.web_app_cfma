@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block content %}
+
+
+<h2 class="fw-bold text-primary mb-4 border-bottom pb-2">
+    <i class="fa-solid fa-gears me-2"></i>Prestations de Diagnostic et Maintenance
+</h2>
+
+<div class="row">
+    {% for service in services %}
+        <div class="col-md-4 mb-4">
+            <!-- 🎯 RETRAIT DE H-100 POUR QUE LES CARTES S'AGRANDISSENT INDÉPENDAMMENT -->
+            <div class="card border-0 shadow-sm overflow-hidden text-center position-relative" style="transition: transform 0.2s ease;">
+                
+                <!-- HAUTEUR DE L'IMAGE À 280px -->
+                <div class="position-relative" style="height: 280px; background-color: #212529;">
+                    {% if service.image %}
+                        <img src="{{ service.image.url }}" alt="{{ service.titre }}" class="w-100 h-100 object-fit-cover">
+                    {% else %}
+                        <div class="w-100 h-100" style="background: linear-gradient(135deg, #ec6f45, #be532e); opacity: 0.85;"></div>
+                    {% endif %}
+                </div>
+
+                <!-- MACARON DE L'ICÔNE FONTAWESOME -->
+                <div class="position-absolute start-50 translate-middle" style="top: 280px; z-index: 2;">
+                    <div class="rounded-circle bg-white shadow d-flex align-items-center justify-content-center border border-2 border-primary" style="width: 60px; height: 60px;">
+                        <i class="fa-solid {{ service.icone_font_awesome|default:'fa-wrench' }} fa-xl text-primary"></i>
+                    </div>
+                </div>
+
+                <!-- Corps du Service -->
+                <div class="card-body d-flex flex-column pt-5 px-4 pb-4">
+                    <h4 class="card-title fw-bold text-dark mt-2 mb-3">{{ service.titre }}</h4>
+                    
+                    <!-- SYSTEME DE LECTURE UNIFIÉ AVEC LES CLASSES DU SCRIPT -->
+                    <div class="text-muted small flex-grow-1 text-start mb-3">
+                        <!-- Résumé (Texte court) -->
+                        <p class="texte-court mb-1">
+                            {{ service.description|truncatewords:20 }}
+                        </p>
+                        
+                        <!-- Contenu complet caché par défaut -->
+                        <div class="texte-complet d-none">
+                            <p class="mt-2 pt-2 border-top border-light">
+                                {{ service.description|linebreaksbr }}
+                            </p>
+                        </div>
+
+                        <!-- Bouton mis à jour pour appeler proprement la fonction globale -->
+                        <button type="button" 
+                                class="btn btn-link btn-sm text-primary p-0 fw-bold mt-2 text-decoration-none d-flex align-items-center gap-1" 
+                                onclick="toggleArticle(this)">
+                           <span>Lire la suite</span>
+                           <i class="fa-solid fa-arrow-right toggle-icone small"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Gestion du Tarif indicatif adapté à la charte Orange -->
+                    {% if service.prix_public_indicatif %}
+                        <div class="mt-auto pt-2">
+                            <div class="badge bg-primary-subtle text-primary border border-primary-subtle fs-6 px-3 py-2 rounded-pill fw-bold">
+                                <i class="fa-solid fa-tag me-1 small"></i>{{ service.prix_public_indicatif }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center fw-bold shadow-sm p-4">
+                <i class="fa-solid fa-circle-exclamation me-2 fa-xl"></i>Aucune prestation ou service disponible pour le moment.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Petit script CSS pour l'interaction dynamique au survol et l'animation -->
+<style>
+    .card:hover {
+        transform: translateY(-4px);
+    }
+    .bg-primary-subtle {
+        background-color: var(--bs-primary-bg-subtle) !important;
+    }
+    .border-primary-subtle {
+        border-color: var(--bs-primary-border-subtle) !important;
+    }
+    /* Style d'animation pour une apparition en douceur du texte */
+    .fade-in-text {
+        opacity: 0;
+        animation: fadeIn 0.4s ease forwards;
+    }
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+</style>
+
+<!-- Script JavaScript corrigé et synchronisé -->
+<script>
+function toggleArticle(btn) {
+    // On remonte au parent direct '.card-body' de CE bouton uniquement
+    const cardBody = btn.closest('.card-body');
+    const texteCourt = cardBody.querySelector('.texte-court');
+    const texteComplet = cardBody.querySelector('.texte-complet');
+    const btnText = btn.querySelector('span');
+    const icone = btn.querySelector('.toggle-icone');
+
+    if (texteComplet.classList.contains('d-none')) {
+        // Mode "Déplier"
+        texteCourt.classList.add('d-none');
+        texteComplet.classList.remove('d-none');
+        texteComplet.classList.add('fade-in-text');
+
+        btnText.textContent = "Réduire";
+        icone.classList.replace('fa-arrow-right', 'fa-arrow-up');
+    } else {
+        // Mode "Replier"
+        texteComplet.classList.remove('fade-in-text');
+        texteComplet.classList.add('d-none');
+        texteCourt.classList.remove('d-none');
+        
+        btnText.textContent = "Lire la suite";
+        icone.classList.replace('fa-arrow-up', 'fa-arrow-right');
+        
+        // Remonte doucement vers le haut de la carte concernée
+        btn.closest('.card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+</script>
+
+
+
+<!-- <h2 class="fw-bold text-primary mb-4 border-bottom pb-2"><i class="fa-solid fa-gears me-2"></i>Prestations de Diagnostic et Maintenance</h2>
+<div class="row">
+    {% for service in services %}
+        <div class="col-md-4 mb-4">
+            <div class="card border-light shadow-sm h-100 text-center p-3">
+                <div class="card-body">
+                    <i class="fa-solid {{ service.icone_font_awesome }} fa-3x text-primary mb-3"></i>
+                    <h4 class="card-title fw-bold text-dark">{{ service.titre }}</h4>
+                    <p class="text-muted small">{{ service.description }}</p>
+                    {% if service.prix_public_indicatif %}
+                        <div class="badge bg-light text-primary border border-primary fs-6 px-3 py-2 rounded-pill mt-2">
+                            Tarif : {{ service.prix_public_indicatif }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+<div class="alert alert-warning text-center fw-bold shadow-sm">
+    <i class="fa-solid fa-circle-exclamation me-2"></i>Aucune actualité publiée récemment.
+</div>    {% endfor %}
+
+</div> -->
+
+{% endblock %}

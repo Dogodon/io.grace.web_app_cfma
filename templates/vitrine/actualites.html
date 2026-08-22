@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="fw-bold text-primary mb-4 border-bottom pb-2">
+    <i class="fa-solid fa-newspaper me-2"></i>Le Fil d'Actualités CFMA
+</h2>
+
+<div class="row">
+    {% for acter in actualites %}
+        <div class="col-md-6 mb-4">
+            <!-- 🎯 RETRAIT DE H-100 POUR PERMETTRE UN AGRANDISSEMENT INDÉPENDANT -->
+            <div class="card border-0 shadow-sm overflow-hidden {% if acter.est_epinglé %}border-start border-primary border-4{% endif %}" style="transition: transform 0.2s ease;">
+                
+                <!-- 🎯 HAUTEUR DE L'IMAGE PASSÉE À 280px POUR UNE MEILLEURE VISIBILITÉ -->
+                <div class="position-relative" style="height: 280px; background-color: #212529;">
+                    {% if acter.image %}
+                        <img src="{{ acter.image.url }}" alt="{{ acter.titre }}" class="w-100 h-100 object-fit-cover">
+                    {% else %}
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #495057, #212529);">
+                            <i class="fa-solid fa-car-burst text-white opacity-25 fa-4x"></i>
+                        </div>
+                    {% endif %}
+
+                    {% if acter.est_epinglé %}
+                        <span class="badge bg-primary position-absolute top-0 end-0 m-3 shadow px-3 py-2 rounded-pill fw-bold">
+                            <i class="fa-solid fa-thumbtack me-1"></i>À la Une
+                        </span>
+                    {% endif %}
+                </div>
+
+                <!-- Corps de la carte -->
+                <div class="card-body d-flex flex-column p-4">
+                    <div class="mb-2">
+                        <small class="text-muted fw-semibold">
+                            <i class="fa-solid fa-calendar me-1 text-primary"></i>{{ acter.date_publication|date:"d M Y" }}
+                        </small>
+                    </div>
+                    
+                    <h4 class="fw-bold mb-3 {% if acter.est_epinglé %}text-primary{% else %}text-dark{% endif %}">
+                        {{ acter.titre }}
+                    </h4>
+                    
+                    <!-- 🎯 ZONE DE TEXTE ALIGNÉE SUR LE SCRIPT JAVASCRIPT -->
+                    <div class="text-muted small mb-0 flex-grow-1 actualite-texte-box">
+                        <!-- Texte d'introduction (Masqué lors du déploiement) -->
+                        <div class="texte-court">
+                            {{ acter.contenu|truncatewords:40|linebreaksbr }}
+                        </div>
+                        
+                        {% if acter.contenu|wordcount > 40 %}
+                            <!-- 🎯 TEXTE COMPLET : Remplacera le résumé lors du clic -->
+                            <div class="texte-complet d-none">
+                                {{ acter.contenu|linebreaksbr }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if acter.contents|wordcount > 40 or acter.contenu|wordcount > 40 %}
+                        <div class="mt-3 pt-2 border-top">
+                            <button type="button" class="btn btn-link btn-sm text-primary p-0 fw-bold text-decoration-none btn-lire-suite" onclick="toggleArticle(this)">
+                                <span>Lire la suite</span> <i class="fa-solid fa-arrow-right ms-1 small toggle-icone"></i>
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center fw-bold shadow-sm p-4">
+                <i class="fa-solid fa-circle-exclamation me-2 fa-xl"></i>Aucune actualité publiée récemment.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- 🎯 SCRIPT INTEGRÉ POUR ASSURER L'ANIMATION ET LE COMPORTEMENT DE CHAQUE CARTE -->
+<style>
+    .card:hover {
+        transform: translateY(-4px);
+    }
+    .fade-in-text {
+        opacity: 0;
+        animation: fadeInKey 0.4s ease forwards;
+    }
+    @keyframes fadeInKey {
+        to { opacity: 1; }
+    }
+</style>
+
+<script>
+function toggleArticle(btn) {
+    // Ciblage local strict à l'intérieur de la carte cliquée
+    const cardBody = btn.closest('.card-body');
+    const texteCourt = cardBody.querySelector('.texte-court');
+    const texteComplet = cardBody.querySelector('.texte-complet');
+    const btnText = btn.querySelector('span');
+    const icone = btn.querySelector('.toggle-icone');
+
+    if (!texteComplet) return;
+
+    if (texteComplet.classList.contains('d-none')) {
+        // Mode "Déplier"
+        texteCourt.classList.add('d-none');
+        texteComplet.classList.remove('d-none');
+        texteComplet.classList.add('fade-in-text');
+
+        btnText.textContent = "Réduire";
+        icone.classList.replace('fa-arrow-right', 'fa-arrow-up');
+    } else {
+        // Mode "Replier"
+        texteComplet.classList.remove('fade-in-text');
+        texteComplet.classList.add('d-none');
+        texteCourt.classList.remove('d-none');
+        
+        btnText.textContent = "Lire la suite";
+        icone.classList.replace('fa-arrow-up', 'fa-arrow-right');
+        
+        // Remonte de manière fluide vers le haut de l'actualité lue
+        btn.closest('.card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+</script>
+
+
+<!-- =========================================================================
+    STYLE & LOGIQUE INTERACTIVE
+========================================================================== -->
+<style>
+    .card:hover {
+        transform: translateY(-3px);
+    }
+    /* Classe utilitaire pour animer l'apparition du texte */
+    .fade-in-text {
+        opacity: 1 !important;
+    }
+    /* Empêche les sauts de ligne doublés induits par linebreaksbr dans des blocs compacts */
+    .actualite-texte-box br {
+        content: "";
+        margin: 2px 0;
+        display: block;
+    }
+</style>
+
+{% endblock %}
+
+
+
+
+
+<!-- <h2 class="fw-bold text-primary mb-4 border-bottom pb-2"><i class="fa-solid fa-newspaper me-2"></i>Le Fil d'Actualités CFMA</h2>
+<div class="row">
+    {% for acter in actualites %}
+        <div class="col-md-6 mb-4">
+            <div class="card border-light shadow-sm {% if acter.est_epinglé %}border-primary{% endif %} h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-muted"><i class="fa-solid fa-calendar me-1"></i>{{ acter.date_publication|date:"d M Y" }}</small>
+                        {% if acter.est_epinglé %}<span class="badge bg-primary"><i class="fa-solid fa-thumbtack me-1"></i>À la Une</span>{% endif %}
+                    </div>
+                    <h4 class="fw-bold {% if acter.est_epinglé %}text-primary{% else %}text-dark{% endif %}">{{ acter.titre }}</h4>
+                    <p class="text-muted small">{{ acter.contenu|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+<div class="alert alert-warning text-center fw-bold shadow-sm">
+    <i class="fa-solid fa-circle-exclamation me-2"></i>Aucune actualité publiée récemment.
+</div>
+    {% endfor %}
+</div> -->

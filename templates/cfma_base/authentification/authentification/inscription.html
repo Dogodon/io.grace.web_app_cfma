@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="card border-primary shadow-sm">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h4 class="mb-0 fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Ouverture de Compte Sécurisé</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" action="{% url 'inscription' %}" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Bloc d'affichage des erreurs de validation globales -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger py-2 mb-3 small">
+                            <h6 class="fw-bold mb-1"><i class="fa-solid fa-triangle-exclamation me-2"></i>Échec de validation :</h6>
+                            <ul class="mb-0 ps-3">
+                                {% for champ, erreurs in form.errors.items %}
+                                    <li><strong>{{ champ }} :</strong> {{ erreurs.0|striptags }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <h5 class="text-primary border-bottom pb-2 mb-3"><i class="fa-solid fa-id-card me-2"></i>Identité de connexion</h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">Nom d'utilisateur</label>
+                            <input type="text" name="username" id="{{ form.username.id_for_label }}" class="form-control {% if form.username.errors %}is-invalid{% endif %}" value="{{ form.username.value|default:'' }}" required>
+                            <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">Adresse Email</label>
+                            <input type="email" name="email" id="{{ form.email.id_for_label }}" class="form-control {% if form.email.errors %}is-invalid{% endif %}" value="{{ form.email.value|default:'' }}" required>
+                            <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">Prénom</label>
+                            <input type="text" name="first_name" id="{{ form.first_name.id_for_label }}" class="form-control" value="{{ form.first_name.value|default:'' }}" required>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">Nom de famille</label>
+                            <input type="text" name="last_name" id="{{ form.last_name.id_for_label }}" class="form-control" value="{{ form.last_name.value|default:'' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <!-- Champ 1 : Mot de passe -->
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label fw-bold">Mot de passe</label>
+                            <input type="password" name="password" id="{{ form.password.id_for_label }}" 
+                                   class="form-control {% if form.password.errors %}is-invalid{% endif %}" required placeholder="••••••••">
+                            <div class="invalid-feedback">{{ form.password.errors.0 }}</div>
+                        </div>
+                        
+                        <!-- Champ 2 : Confirmation -->
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="id_password_confirmation" class="form-label fw-bold">Confirmation</label>
+                            <input type="password" name="password_confirmation" id="id_password_confirmation" 
+                                   class="form-control" required placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <h5 class="text-primary border-bottom pb-2 mt-4 mb-3"><i class="fa-solid fa-sliders me-2"></i>Rôle & Profil Métier</h5>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.role.id_for_label }}" class="form-label fw-bold text-success">Votre profil au sein du CFMA</label>
+                            <select name="role" id="{{ form.role.id_for_label }}" class="form-select border-success" onchange="basculerChampsProfil(this.value)">
+                                {% for val, label in form.fields.role.choices %}
+                                    <option value="{{ val }}" {% if form.role.value == val %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.telephone.id_for_label }}" class="form-label fw-bold">Numéro de Téléphone</label>
+                            <input type="text" name="telephone" id="{{ form.telephone.id_for_label }}" class="form-control {% if form.telephone.errors %}is-invalid{% endif %}" value="{{ form.telephone.value|default:'' }}" required placeholder="Ex: +225 07...">
+                            <div class="invalid-feedback">{{ form.telephone.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Bloc dynamique : Client -->
+                    <div id="bloc-client" class="form-group mb-3 d-none">
+                        <label for="{{ form.address.id_for_label }}" class="form-label fw-bold">Adresse géographique de livraison</label>
+                        <textarea name="adresse" id="{{ form.address.id_for_label }}" class="form-control" rows="2">{{ form.adresse.value|default:'' }}</textarea>
+                    </div>
+
+                    <!-- Bloc dynamique : Apprenant -->
+                    <div id="bloc-apprenant" class="row g-3 d-none">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.matricule.id_for_label }}" class="form-label fw-bold">Numéro de Matricule Élève</label>
+                            <input type="text" name="matricule" id="{{ form.matricule.id_for_label }}" class="form-control {% if form.matricule.errors %}is-invalid{% endif %}" value="{{ form.matricule.value|default:'' }}" placeholder="Ex: ETUD-2026-X">
+                            <div class="invalid-feedback">{{ form.matricule.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.promotion.id_for_label }}" class="form-label fw-bold">Affectation Promotion</label>
+                            <select name="promotion" id="{{ form.promotion.id_for_label }}" class="form-select">
+                                <option value="">-- Sélectionner une cohorte --</option>
+                                {% for promo in form.fields.promotion.queryset %}
+                                    <option value="{{ promo.id }}" {% if form.promotion.value|slugify == promo.id|slugify %}selected{% endif %}>{{ promo.nom }} ({{ promo.niveau }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold">Valider mon inscription</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-center py-3 border-top">
+                <span class="text-muted">Déjà inscrit ?</span>
+                <a href="{% url 'login' %}" class="link-success fw-bold text-decoration-none ms-1">Se connecter</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script JS pour l'interactivité dynamique thématique Litera -->
+<script>
+    function basculerChampsProfil(roleSelectionne) {
+        const blocClient = document.getElementById('bloc-client');
+        const blocApprenant = document.getElementById('bloc-apprenant');
+
+        // Initialisation par masquage complet
+        blocClient.classList.add('d-none');
+        blocApprenant.classList.add('d-none');
+
+        // Affichage conditionnel selon le choix
+        if (roleSelectionne === 'CLIENT') {
+            blocClient.classList.remove('d-none');
+        } else if (roleSelectionne === 'APPRENANT') {
+            blocApprenant.classList.remove('d-none');
+        }
+    }
+
+    // Exécution automatique pour conserver l'état d'affichage après rejet du formulaire
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectRole = document.getElementById("{{ form.role.id_for_label }}");
+        if (selectRole) {
+            basculerChampsProfil(selectRole.value);
+        }
+    });
+</script>
+{% endblock %}

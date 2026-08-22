@@ -1,0 +1,22 @@
+/* Bouton Gris (Anciennement Bleu) */
+.btn-gray-custom {
+    background-color: #6c757d !important; /* gris */
+    border-color: #6c757d !important; /* gris */
+    color: #ffffff !important; /* blanc */
+}
+.btn-gray-custom:hover {
+    background-color: #5a6268 !important; /* gris plus sombre */
+    border-color: #ff8400 !important; /* gris plus sombre */
+}
+
+/* Bouton Blanc (Anciennement Vert) */
+.btn-white-custom {
+    background-color: #ffffff !important; /* blanc */
+    border-color: #e0e0e0 !important; /* gris clair pour la bordure */
+    color: #FF6600 !important; /* orange pour le texte */
+}
+.btn-white-custom:hover {
+    background-color: #f8f9fa !important; /* blanc cassé */
+    border-color: #d3d3d3 !important;
+    color: #E05A00 !important; /* orange plus sombre au survol */
+}

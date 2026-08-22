@@ -13,10 +13,14 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 from pathlib import Path
 from decouple import config
 import dj_database_url
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+AUTH_USER_MODEL = 'cfma_base.User'
 
 
 # Quick-start development settings - unsuitable for production
@@ -30,10 +34,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,10 +66,24 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+
+# config/settings.py
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # <-- Vérifiez que cette ligne est bien présente
+        'APP_DIRS': True,
+        # ...
+    },
+]
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        #'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'], 
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,6 +95,15 @@ TEMPLATES = [
     },
 ]
 
+
+
+# config/settings.py
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
@@ -79,11 +111,76 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 
-import os
 
-DATABASES = {
+
+###jazzmin :
+
+# config/settings.py
+
+JAZZMIN_SETTINGS = {
+    # Titre de la page et de l'onglet
+    "site_title": "CFMA Garage Admin",
+    "site_header": "CFMA Orange",
+    "site_brand": "CFMA Garage",
+
+"custom_css": "css/custom_admin.css",
+
+    # 🎯 COULEURS DE LA CHARTE (Classes Bootstrap)
+    "site_logo_classes": "img-circle",
+    "welcome_sign": "Bienvenue sur l'interface de gestion CFMA",
+    "copyright": "CFMA Orange Garage",
+    #"search_model": ["auth.User", "cfma_base.ProfilClient"],
+    "search_model": ["cfma_base.User", "cfma_base.ProfilClient"],
+    
+    # Forme des éléments
+    
+    "topmenu_links": [
+        # Modifiez cette ligne dans vos JAZZMIN_SETTINGS :
+        {"name": "Accueil", "url": "admin:index", "permissions": ["cfma_base.view_user"]},
+
+        #{"name": "Accueil", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "Voir le Site", "url": "/", "new_window": True},
+    ],
+}
+# 🎯 LE SECRET POUR LA CHARTE ORANGE (UI Tweaks)
+JAZZMIN_UI_TWEAKS = {
+    # Barre supérieure orange avec texte blanc (navbar-dark)
+    "navbar": "navbar-orange navbar-dark",
+    
+    # Thème général de l'administration (Flatly ou Default)
+    "theme": "default",
+    
+    # Style de la barre latérale (Sidebar) sombre pour faire ressortir l'orange
+    "sidebar": "sidebar-dark-orange",
+    
+    # Couleur des boutons d'action principaux (Enregistrer, etc.) en orange
+    "button_classes": {
+        "primary": "btn-orange",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
+}
+
+
+
+
+
+
+
+
+""" DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL')
+    )
+} """
+
+
+DATABASES = {
+    'default': dj_database_url.parse(
+        config('DATABASE_URL')
     )
 }
 
@@ -140,12 +237,55 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Ajoutez cette ligne pour lier votre dossier racine
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
+""" MAILERS = {
+    'default': {
+        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+    },
+} """
+
+
+
+# Emplacement sur le disque dur où les fichiers seront stockés
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Préfixe d'URL pour accéder à ces images dans le navigateur
+MEDIA_URL = '/media/'
+
+
+
+# =========================================================================
+# CONFIGURATIONS EMAILS ET AUTHENTIFICATION
+# =========================================================================
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+AUTH_USER_MODEL = 'cfma_base.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+LOGIN_REDIRECT_URL = 'redirection_portail'
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = 'login'
+
+
+# raise InconsistentMigrationHistory(
+#     ...
+# )
+pass
+
+

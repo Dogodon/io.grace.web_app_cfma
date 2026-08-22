@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- =========================================================================
+    1. SECTION BANNER HERO (THÉMATIQUE LITERA)
+========================================================================== -->
+<div class="p-5 mb-5 bg-light rounded-3 border shadow-sm">
+    <div class="container-fluid py-3 text-center">
+        <span class="badge bg-success rounded-pill px-3 py-2 mb-3 fw-bold text-uppercase tracking-wider">Inscriptions Ouvertes - Rentrée 2026</span>
+        <h1 class="display-4 fw-bold text-primary mb-3">Propulsez votre Carrière Automobile</h1>
+        <p class="col-md-8 mx-auto fs-5 text-muted">
+            Découvrez nos parcours d'excellence combinant cours théoriques en salle et pratique intensive en conditions réelles au sein de notre atelier de diagnostic de pointe.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="#catalogue" class="btn btn-primary btn-lg rounded-pill px-4 fw-bold">Consulter le catalogue</a>
+            <a href="{% url 'inscription' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">S'inscrire en ligne</a>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================================
+    2. CARROUSEL INTERACTIF DES PÔLES MÉTIERS
+========================================================================== -->
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+        <h3 class="fw-bold text-dark text-center mb-4"><i class="fa-solid fa-images me-2 text-primary"></i>Immersion au cœur de nos Ateliers</h3>
+        
+<div id="carouselFormations" class="carousel slide carousel-dark shadow border rounded-3 overflow-hidden bg-white"            <!-- Indicateurs de position -->
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselFormations" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselFormations" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselFormations" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+
+            <!-- Contenu du carrousel -->
+            <div class="carousel-inner">
+                <!-- Slide 1 : Diagnostic Électronique -->
+                <div class="carousel-item active" data-bs-interval="4000">
+                    <div style="height: 400px; background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);" class="d-flex align-items-center justify-content-center position-relative">
+                        <div class="text-center p-5 z-2">
+                            <i class="fa-solid fa-laptop-code text-primary fa-4x mb-3"></i>
+                            <h3 class="fw-bold text-dark">Pôle Diagnostic & Électronique Embarquée</h3>
+                            <p class="text-muted col-md-8 mx-auto">Apprenez à maîtriser les valises de diagnostic multimorques de dernière génération pour analyser et décoder les calculateurs modernes.</p>
+                            <span class="badge bg-primary px-3 py-2 rounded-pill fw-bold">Équipements Haute Technologie</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 : Maintenance Mécanique -->
+                <div class="carousel-item" data-bs-interval="4000">
+                    <div style="height: 400px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);" class="d-flex align-items-center justify-content-center position-relative">
+                        <div class="text-center p-5 z-2">
+                            <i class="fa-solid fa-screwdriver-wrench text-success fa-4x mb-3"></i>
+                            <h3 class="fw-bold text-dark">Pôle Maintenance Mécanique Traditionnelle</h3>
+                            <p class="text-muted col-md-8 mx-auto">De la révision complète au démontage de moteurs thermiques (Essence et Diesel). Maîtrisez les systèmes de freinage, de suspension et de transmission.</p>
+                            <span class="badge bg-success px-3 py-2 rounded-pill fw-bold">Pratique 100% Terrain</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 : Motorisations Hybrides & Électriques -->
+                <div class="carousel-item" data-bs-interval="4000">
+                    <div style="height: 400px; background: linear-gradient(135deg, #e3faf2 0%, #cbf3e4 100%);" class="d-flex align-items-center justify-content-center position-relative">
+                        <div class="text-center p-5 z-2">
+                            <i class="fa-solid fa-bolt text-warning fa-4x mb-3"></i>
+                            <h3 class="fw-bold text-dark">Pôle Véhicules Électriques & Hybrides</h3>
+                            <p class="text-muted col-md-8 mx-auto">Préparez-vous aux technologies de demain. Formez-vous aux règles d'or de la sécurité et obtenez vos habilitations électriques professionnelles.</p>
+                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">Métier d'Avenir</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boutons de contrôle Précédent / Suivant -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselFormations" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Précédent</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselFormations" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Suivant</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================================
+    3. CATALOGUE DE NOS DIPLÔMES ET CERTIFICATIONS
+========================================================================== -->
+<div id="catalogue" class="mt-5 pt-3">
+    <h3 class="fw-bold text-dark border-bottom pb-2 mb-4">
+        <i class="fa-solid fa-graduation-cap me-2 text-primary"></i>Nos Cursus Diplômants & Certifications
+    </h3>
+
+    <div class="row">
+        <!-- Cursus 1 : CAP Maintenance -->
+        <div class="col-md-4 mb-4">
+            <div class="card border-light shadow-sm h-100 transition-all">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-info text-white font-monospace uppercase px-2 py-1">Diplôme d'État</span>
+                        <span class="badge bg-light text-dark border fw-normal">Durée : 2 ans</span>
+                    </div>
+                    <h4 class="card-title fw-bold text-primary mb-2">CAP Maintenance des Véhicules</h4>
+                    <p class="card-text text-muted small">
+                        Le parcours fondamental pour acquérir les bases de la mécanique de précision. Apprenez à réaliser les entretiens courants, les vidanges, le remplacement des consommables et les réparations de premier niveau.
+                    </p>
+                    <ul class="list-unstyled small my-3 text-dark">
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Entretien des circuits de freinage</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Changement d'embrayage & trains</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Préparation au contrôle technique</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 pb-3">
+                    <div class="d-grid">
+                        <a href="{% url 'inscription' %}" class="btn btn-outline-primary btn-sm rounded-pill fw-bold">Déposer un dossier</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cursus 2 : CQP Diagnostic -->
+        <div class="col-md-4 mb-4">
+            <div class="card border-primary shadow-sm h-100 position-relative">
+                <div class="position-absolute top-0 end-0 bg-primary text-white px-3 py-1 rounded-bl small fw-bold" style="border-radius: 0 0.3rem 0 0.3rem;">Le plus demandé</div>
+                <div class="card-body mt-2">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-warning text-dark font-monospace uppercase px-2 py-1">Qualification Pro</span>
+                        <span class="badge bg-light text-dark border fw-normal">Durée : 1 an</span>
+                    </div>
+                    <h4 class="card-title fw-bold text-primary mb-2">CQP Technicien Électricien Électronicien</h4>
+                    <p class="card-text text-muted small">
+                        Spécialisez-vous dans la recherche de pannes complexes. Ce cursus intensif fait de vous un expert des réseaux de communication de multiplexage (Bus CAN), de la climatisation et de la gestion moteur électronique.
+                    </p>
+                    <ul class="list-unstyled small my-3 text-dark">
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Interprétation des oscillogrammes</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Lecture & effacement des codes défauts</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Analyse des capteurs et actionneurs</li>
+                    </ul>
+                </div>
+
+                S'inscrire à la sessionDiplôme d'ÉtatDurée : 3 ansBac Pro Métiers de l'AutomobileUn parcours complet orienté vers l'autonomie et la gestion d'équipe en atelier. 
+                Ce diplôme englobe la mécanique lourde, l'initiation aux systèmes hybrides et l'accueil/conseil de la clientèle du garage.Réparation de boîtes de vitessesHabilitation électrique B2VL incluseManagement d'un îlot de travailDemander la brochure
+                
+                
+{% endblock %}

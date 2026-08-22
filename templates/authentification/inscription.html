@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+        <div class="card border-primary shadow-sm">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h4 class="mb-0 fw-bold"><i class="fa-solid fa-user-plus me-2"></i>Ouverture de Compte Sécurisé</h4>
+            </div>
+            <div class="card-body p-4">
+                
+                <!-- Bloc d'affichage des erreurs système de Django -->
+                {% if form.errors %}
+                    <div class="alert alert-danger shadow-sm border-start border-danger border-4 mb-4">
+                        <h6 class="fw-bold mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i>Erreurs de validation détectées :</h6>
+                        <ul class="mb-0 small">
+                            {% for field, errors in form.errors.items %}
+                                <li><strong>{{ field }} :</strong> {{ errors|striptags }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'inscription' %}" novalidate>
+                    {% csrf_token %}
+
+                    <h5 class="text-primary border-bottom pb-2 mb-3"><i class="fa-solid fa-id-card me-2"></i>Identité de connexion</h5>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label fw-bold">Nom d'utilisateur</label>
+                            <input type="text" name="username" id="{{ form.username.id_for_label }}" class="form-control {% if form.username.errors %}is-invalid{% endif %}" value="{{ form.username.value|default:'' }}" required>
+                            <div class="invalid-feedback">{{ form.username.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">Adresse Email</label>
+                            <input type="email" name="email" id="{{ form.email.id_for_label }}" class="form-control {% if form.email.errors %}is-invalid{% endif %}" value="{{ form.email.value|default:'' }}" required>
+                            <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label fw-bold">Prénom</label>
+                            <input type="text" name="first_name" id="{{ form.first_name.id_for_label }}" class="form-control {% if form.first_name.errors %}is-invalid{% endif %}" value="{{ form.first_name.value|default:'' }}" required>
+                            <div class="invalid-feedback">{{ form.first_name.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label fw-bold">Nom de famille</label>
+                            <input type="text" name="last_name" id="{{ form.last_name.id_for_label }}" class="form-control {% if form.last_name.errors %}is-invalid{% endif %}" value="{{ form.last_name.value|default:'' }}" required>
+                            <div class="invalid-feedback">{{ form.last_name.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label fw-bold">Mot de passe</label>
+                            <input type="password" name="password1" id="{{ form.password1.id_for_label }}" class="form-control {% if form.password1.errors %}is-invalid{% endif %}" required>
+                            <div class="invalid-feedback">{{ form.password1.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label fw-bold">Confirmation</label>
+                            <input type="password" name="password2" id="{{ form.password2.id_for_label }}" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <h5 class="text-primary border-bottom pb-2 mt-4 mb-3"><i class="fa-solid fa-sliders me-2"></i>Rôle & Profil Métier</h5>
+
+                    <div class="row g-3">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.role.id_for_label }}" class="form-label fw-bold text-success">Votre profil au sein du CFMA</label>
+                            <select name="role" id="{{ form.role.id_for_label }}" class="form-select border-success {% if form.role.errors %}is-invalid{% endif %}" onchange="basculerChampsProfil(this.value)">
+                                {% for val, label in form.fields.role.choices %}
+                                    <option value="{{ val }}" {% if form.role.value == val %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">{{ form.role.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.telephone.id_for_label }}" class="form-label fw-bold">Numéro de Téléphone</label>
+                            <input type="text" name="telephone" id="{{ form.telephone.id_for_label }}" class="form-control {% if form.telephone.errors %}is-invalid{% endif %}" value="{{ form.telephone.value|default:'' }}" required placeholder="Ex: +225 07...">
+                            <div class="invalid-feedback">{{ form.telephone.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Bloc dynamique : Client -->
+                    <div id="bloc-client" class="form-group mb-3 d-none">
+                        <label for="{{ form.adresse.id_for_label }}" class="form-label fw-bold">Adresse géographique de livraison</label>
+                        <textarea name="adresse" id="{{ form.adresse.id_for_label }}" class="form-control {% if form.adresse.errors %}is-invalid{% endif %}" rows="2">{{ form.adresse.value|default:'' }}</textarea>
+                        <div class="invalid-feedback">{{ form.adresse.errors.0 }}</div>
+                    </div>
+
+                    <!-- Bloc dynamique : Apprenant -->
+                    <div id="bloc-apprenant" class="row g-3 d-none">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.matricule.id_for_label }}" class="form-label fw-bold">Numéro de Matricule Élève</label>
+                            <input type="text" name="matricule" id="{{ form.matricule.id_for_label }}" class="form-control {% if form.matricule.errors %}is-invalid{% endif %}" value="{{ form.matricule.value|default:'' }}" placeholder="Ex: ETUD-2026-X">
+                            <div class="invalid-feedback">{{ form.matricule.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="{{ form.promotion.id_for_label }}" class="form-label fw-bold">Affectation Promotion</label>
+                            <select name="promotion" id="{{ form.promotion.id_for_label }}" class="form-select {% if form.promotion.errors %}is-invalid{% endif %}">
+                                <option value="">-- Sélectionner une cohorte --</option>
+                                {% for promo in form.fields.promotion.queryset %}
+                                    <option value="{{ promo.id }}" {% if form.promotion.value|slugify == promo.id|slugify %}selected{% endif %}>{{ promo.nom }} ({{ promo.niveau }})</option>
+                                {% endfor %}
+                            </select>
+                            <div class="invalid-feedback">{{ form.promotion.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg rounded-pill fw-bold">Valider mon inscription</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer bg-light text-center py-3 border-top">
+                <span class="text-muted">Déjà inscrit ?</span>
+                <a href="{% url 'login' %}" class="link-success fw-bold text-decoration-none ms-1">Se connecter</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function basculerChampsProfil(roleSelectionne) {
+        const blocClient = document.getElementById('bloc-client');
+        const blocApprenant = document.getElementById('bloc-apprenant');
+
+        blocClient.classList.add('d-none');
+        blocApprenant.classList.add('d-none');
+
+        if (roleSelectionne === 'CLIENT') {
+            blocClient.classList.remove('d-none');
+        } else if (roleSelectionne === 'APPRENANT') {
+            blocApprenant.classList.remove('d-none');
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectRole = document.getElementById("{{ form.role.id_for_label }}");
+        if(selectRole) basculerChampsProfil(selectRole.value);
+    });
+</script>
+{% endblock %}

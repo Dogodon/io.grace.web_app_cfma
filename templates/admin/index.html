@@ -1,0 +1,147 @@
+<!-- templates/admin/index.html -->
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <!-- 📊 BLOC 1 : LES CARTES DE STATISTIQUES (KPIs) -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-white shadow-sm border-top border-4" style="border-color: #FF6600 !important;">
+                <div class="inner p-3">
+                    <h3 class="fw-bold" style="color: #FF6600;">{{ total_clients|default:0 }}</h3>
+                    <p class="text-muted fw-bold">Clients Enregistrés</p>
+                </div>
+                <div class="icon"><i class="fas fa-users" style="color: rgba(255,102,0,0.1);"></i></div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-white shadow-sm border-top border-4 border-warning">
+                <div class="inner p-3">
+                    <h3 class="text-warning fw-bold">{{ en_atelier|default:0 }}</h3>
+                    <p class="text-muted fw-bold">Actuellement en Atelier (Bloqués)</p>
+                </div>
+                <div class="icon"><i class="fas fa-wrench" style="color: rgba(255,193,7,0.1);"></i></div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-6">
+            <div class="small-box bg-white shadow-sm border-top border-4 border-success">
+                <div class="inner p-3">
+                    <h3 class="text-success fw-bold">{{ restitues|default:0 }}</h3>
+                    <p class="text-muted fw-bold">Sorties Validées (Restitués)</p>
+                </div>
+                <div class="icon"><i class="fas fa-check-circle" style="color: rgba(40,167,69,0.1);"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 📈 BLOC 2 : LE GRAPHIQUE DYNAMIQUE -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm bg-white p-3">
+                <h5 class="fw-bold mb-3" style="color: #333;"><i class="fas fa-chart-bar me-2" style="color: #FF6600;"></i>Analyse du Stock / Flux</h5>
+                <canvas id="fluxChart" style="max-height: 280px;"></canvas>
+            </div>
+        </div>
+
+        <!-- 🕵️‍♂️ BLOC 3 : LE JOURNAL DES FAITS ET GESTES (TRAÇABILITÉ) -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm bg-white p-3">
+                <h5 class="fw-bold mb-3" style="color: #333;"><i class="fas fa-history me-2" style="color: #FF6600;"></i>Activités Récentes de l'Équipe</h5>
+                <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead>
+                            <tr class="text-muted small">
+                                <th>Utilisateur</th>
+                                <th>Action</th>
+                                <th>Élément ciblé</th>
+                                <th>Date & Heure</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            {% for log in recents_logs %}
+                            <tr>
+                                <td class="fw-bold text-dark">{{ log.user.username }}</td>
+                                <td>
+                                    {% if log.is_addition %}<span class="badge bg-success-light text-success">Ajout</span>
+                                    {% elif log.is_change %}<span class="badge bg-warning-light" style="color: #FF6600;">Modif</span>
+                                    {% else %}<span class="badge bg-danger-light text-danger">Suppr</span>{% endif %}
+                                </td>
+                                <td class="text-muted">{{ log.object_repr|truncatechars:20 }}</td>
+                                <td class="text-muted">{{ log.action_time|date:"d/m à H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted py-3">Aucune action enregistrée.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- 📊 SCRIPT JAVASCRIPT POUR LE GRAPHIQUE (CHART.JS CORRECTION STRONGE) -->
+<!-- 🎯 CDN jsDelivr COMPLET ET CORRECT -->
+<script src="https://jsdelivr.net"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('fluxChart');
+        if (!ctx) return;
+
+        // 🎯 SÉCURISATION ABSOLUE : Données lues sous forme de chaînes JSON valides ou tableaux de secours par défaut
+        let labelsDjango = [];
+        let valeursDjango = [];
+
+        try {
+            labelsDjango = JSON.parse('{{ graphe_labels|safe|default:"[]" }}');
+            valeursDjango = JSON.parse('{{ graphe_valeurs|safe|default:"[]" }}');
+        } catch (e) {
+            console.log("Données vides ou en attente d'initialisation, chargement du graphique par défaut.");
+            labelsDjango = [];
+            valeursDjango = [];
+        }
+
+        // Si aucun véhicule en base, on crée une barre d'attente propre
+        if (!labelsDjango || labelsDjango.length === 0) {
+            labelsDjango = ["En attente de données"];
+valeursDjango = [0];
+        }
+
+        new Chart(ctx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: labelsDjango,
+                datasets: [{
+                    label: 'Nombre de Véhicules',
+                    data: valeursDjango,
+                    backgroundColor: '#FF6600',
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { stepSize: 1 } 
+                    } 
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    .bg-success-light { background-color: rgba(40,167,69,0.1); }
+    .bg-warning-light { background-color: rgba(255,102,0,0.1); }
+    .bg-danger-light { background-color: rgba(220,53,69,0.1); }
+</style>
+{% endblock %}

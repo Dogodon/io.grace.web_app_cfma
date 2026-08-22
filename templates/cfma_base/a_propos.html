@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container my-5">
+    <!-- =========================================================================
+        1. BIOGRAPHIES & CARROUSEL INTERACTIF DE PRÉSENTATION (HAUT)
+    ========================================================================== -->
+{% for entreprise in liste_entreprises %}
+    <div class="row mb-5 align-items-stretch g-4">
+        
+        <!-- 🎯 COLONNE GAUCHE : LE CARROUSEL INTERACTIF -->
+        <div class="col-lg-6">
+<div class="custom-card-carousel shadow rounded-3 overflow-hidden h-100" id="carouselAPropos" data-slide-index="0" style="position: relative; min-height: 500px; background-color: #212529;">
+                <div class="custom-card-carousel-inner h-100 position-relative overflow-hidden">
+                    
+                    <!-- Image 1 Obligatoire -->
+                    <div class="custom-propos-slide d-block w-100 h-100 position-absolute top-0 start-0">
+                        {% if entreprise.image1 %}
+                            <img src="{{ entreprise.image1.url }}" alt="CFMA Présentation 1" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-white bg-dark">
+                                <i class="fa-solid fa-images fa-3x mb-2 opacity-50"></i>
+                                <span class="small opacity-50">Aucune image lue</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Images 2 à 5 Optionnelles (🌟 Correction Castle -> entreprise) -->
+                    {% if entreprise.image2 %}<div class="custom-propos-slide d-none w-100 h-100 position-absolute top-0 start-0"><img src="{{ entreprise.image2.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                    {% if entreprise.image3 %}<div class="custom-propos-slide d-none w-100 h-100 position-absolute top-0 start-0"><img src="{{ entreprise.image3.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                    {% if entreprise.image4 %}<div class="custom-propos-slide d-none w-100 h-100 position-absolute top-0 start-0"><img src="{{ entreprise.image4.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                    {% if entreprise.image5 %}<div class="custom-propos-slide d-none w-100 h-100 position-absolute top-0 start-0"><img src="{{ entreprise.image5.url }}" class="w-100 h-100 object-fit-cover"></div>{% endif %}
+                
+                </div>
+                
+                <!-- Flèches de contrôle manuelles -->
+                {% if entreprise.image2 %}
+                    <button class="custom-card-nav prev" type="button" onclick="moveProposSlide(-1)">❮</button>
+                    <button class="custom-card-nav next" type="button" onclick="moveProposSlide(1)">❯</button>
+                    
+                    <div class="custom-card-dots">
+                        <span class="card-dot active" onclick="currentProposSlide(0)"></span>
+                        <span class="card-dot" onclick="currentProposSlide(1)"></span>
+                        {% if entreprise.image3 %}<span class="card-dot" onclick="currentProposSlide(2)"></span>{% endif %}
+                        {% if entreprise.image4 %}<span class="card-dot" onclick="currentProposSlide(3)"></span>{% endif %}
+                        {% if entreprise.image5 %}<span class="card-dot" onclick="currentProposSlide(4)"></span>{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 🎯 COLONNE DROITE : BIOGRAPHIE DU PATRON & HISTOIRE DE L'ENTREPRISE -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4 h-100 justify-content-center bg-white">
+                
+                <!-- Bloc Le Patron -->
+                <div class="mb-4">
+                    <h4 class="text-success fw-bold border-bottom pb-2">
+                        <i class="fa-solid fa-user-tie me-2"></i>Le Mot du Directeur
+                    </h4>
+                    <h5 class="fw-bold text-dark text-uppercase mt-2 mb-1">
+                        {{ entreprise.nom_patron }}
+                    </h5>
+                    <p class="text-muted small lh-base mb-0">
+                        {{ entreprise.biographie_patron|linebreaksbr }}
+                    </p>
+                </div>
+
+                <!-- Bloc L'Histoire de CFMA -->
+                <div>
+                    <h4 class="text-primary fw-bold border-bottom pb-2">
+                        <i class="fa-solid fa-building-shield me-2"></i>À propos de CFMA
+                    </h4>
+                    <p class="text-muted small lh-base mt-2 mb-0">
+                        {{ entreprise.biographie_cfma|linebreaksbr }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    {% empty %}
+    <div class="alert alert-warning text-center my-4 p-4 shadow-sm">
+        <i class="fa-solid fa-triangle-exclamation fa-2x mb-2 text-warning"></i>
+        <h5 class="fw-bold">Aucune configuration d'affichage trouvée</h5>
+        <p class="mb-0 small text-muted">Ajoutez un premier enregistrement dans les Galeries CFMA de l'administration.</p>
+    </div>
+    {% endfor %}
+
+    <!-- =========================================================================
+        2. SECTION COMPLÉMENTAIRE : CONTACTS & PARTENAIRES (BAS)
+    ========================================================================== -->
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 h-100 bg-white">
+                <h3 class="fw-bold text-primary mb-3 border-bottom pb-2"><i class="fa-solid fa-envelope me-2"></i>Contacter le Centre</h3>
+                <div class="d-flex flex-column gap-3 mt-2">
+                    <p class="text-dark mb-0"><strong><i class="fa-solid fa-location-dot me-2 text-primary"></i>Adresse :</strong> <br><span class="ps-4 text-muted">Angré nouveau CHU, Abidjan, Côte d'Ivoire</span></p>
+                    <p class="text-dark mb-0"><strong><i class="fa-solid fa-phone me-2 text-primary"></i>Secrétariat :</strong> <br><span class="ps-4 text-muted">Numéro Orange : +225 07 09 10 36 54</span> <br/><span class="ps-4 text-muted">Numéro MTN : +225 05 46 84 50 88</span></p>
+                    <p class="text-dark mb-0"><strong><i class="fa-solid fa-clock me-2 text-primary"></i>Horaires d'Atelier :</strong> <br><span class="ps-4 text-muted">Lundi - Vendredi (07h30 - 17h)</span> <br/><span class="ps-4 text-muted">Samedi (07h30 - 12h)</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 h-100 bg-white">
+                <h3 class="fw-bold text-dark mb-3 border-bottom pb-2"><i class="fa-solid fa-handshake me-2 text-success"></i>Réseau de Partenaires</h3>
+                <div class="list-group list-group-flush overflow-auto" style="max-height: 300px;">
+                    {% for part in partenaires %}
+                        <div class="list-group-item px-0 py-3 bg-transparent border-bottom">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="flex-shrink-0">
+                                    {% if part.logo %}
+                                        <img src="{{ part.logo.url }}" alt="Logo {{ part.nom_societe }}" class="rounded border bg-white p-1 object-fit-contain" style="width: 60px; height: 60px;">
+                                    {% else %}
+                                        <div class="rounded border bg-light d-flex align-items-center justify-content-center text-secondary opacity-75" style="width: 60px; height: 60px;"><i class="fa-solid fa-building fa-xl"></i></div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex w-100 justify-content-between align-items-start flex-wrap gap-1">
+                                        <h5 class="mb-1 fw-bold text-primary small">{{ part.nom_societe }}</h5>
+                                        <small class="text-success fw-bold"><i class="fa-solid fa-phone me-1"></i>{{ part.telephone_pro }}</small>
+                                    </div>
+                                    <p class="mb-1 small text-muted">Contact : <span class="text-dark">{{ part.email_pro }}</span></p>
+                                    {% if part.site_web %}
+                                        <a href="{{ part.site_web }}" target="_blank" class="small text-decoration-none fw-semibold link-primary"><i class="fa-solid fa-globe me-1"></i>Visiter le site internet</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted p-4"><i class="fa-solid fa-handshake-slash fa-2x mb-2 opacity-50"></i><p class="mb-0 small">Aucun partenaire référencé pour le moment.</p></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================================
+    CSS TRANSITIONS CARROUSEL
+========================================================================== -->
+<!-- =========================================================================
+    CSS TRANSITIONS CARROUSEL (ISOLÉ)
+========================================================================== -->
+<style>
+    .custom-card-nav {
+        position: absolute; 
+        top: 50%; 
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.4); 
+        color: white; 
+        border: none;
+        padding: 8px 12px; 
+        cursor: pointer; 
+        z-index: 10;
+        transition: background 0.2s; 
+        border-radius: 50%; 
+        margin: 0 10px; 
+        font-weight: bold;
+    }
+    .custom-card-nav:hover { 
+        background: rgba(0, 0, 0, 0.8); 
+    }
+    .custom-card-nav.prev { left: 0; }
+    .custom-card-nav.next { right: 0; }
+    
+    .custom-card-dots { 
+        position: absolute; 
+        bottom: 12px; 
+        left: 50%; 
+        transform: translateX(-50%); 
+        z-index: 10; 
+        display: flex; 
+        gap: 6px; 
+    }
+    .card-dot { 
+        width: 8px; 
+        height: 8px; 
+        background: rgba(255, 255, 255, 0.5); 
+        border-radius: 50%; 
+        cursor: pointer; 
+        transition: background 0.2s; 
+    }
+    .card-dot.active { 
+        background: #ffffff; 
+        width: 16px; 
+        border-radius: 4px; 
+    }
+</style>
+
+<!-- =========================================================================
+    SCRIPT INTERACTIF CARROUSEL (ISOLÉ)
+========================================================================== -->
+<script>
+    let proposTimer;
+    let proposIndex = 0;
+
+    function showProposSlide(index) {
+        const container = document.getElementById('carouselAPropos');
+        if (!container) return;
+        const slides = container.querySelectorAll('.custom-propos-slide');
+        const dots = container.querySelectorAll('.card-dot');
+        if (slides.length <= 1) return;
+        
+        proposIndex = parseInt(index);
+        if (proposIndex >= slides.length) proposIndex = 0;
+        if (proposIndex < 0) proposIndex = slides.length - 1;
+        
+        container.setAttribute('data-slide-index', proposIndex);
+        slides.forEach((slide, i) => {
+            if (i === proposIndex) {
+                slide.classList.replace('d-none', 'd-block');
+                if (dots[i]) dots[i].classList.add('active');
+            } else {
+                slide.classList.replace('d-block', 'd-none');
+                if (dots[i]) dots[i].classList.remove('active');
+            }
+        });
+    }
+
+    function moveProposSlide(step) {
+        clearInterval(proposTimer);
+        proposIndex += step;
+        showProposSlide(proposIndex);
+        resetProposTimer();
+    }
+
+    function currentProposSlide(index) {
+        clearInterval(proposTimer);
+        showProposSlide(index);
+        resetProposTimer();
+    }
+
+    function resetProposTimer() {
+        const container = document.getElementById('carouselAPropos');
+        if (!container) return;
+        const slides = container.querySelectorAll('.custom-propos-slide');
+        if (slides.length > 1) {
+            proposTimer = setInterval(() => {
+                proposIndex += 1;
+                showProposSlide(proposIndex);
+            }, 4000);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        resetProposTimer();
+    });
+</script>
+
+
+{% endblock %}

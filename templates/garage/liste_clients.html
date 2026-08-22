@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-6">
+        <h2 class="fw-bold text-primary mb-0">
+            <i class="fa-solid fa-users-gear me-2"></i>Gestion des Clients & Parc Automobile
+        </h2>
+        <p class="text-muted mb-0">Fiches clients croisées avec le suivi des véhicules enregistrés.</p>
+    </div>
+    
+    <!-- Barre de Recherche thématique Litera -->
+    <div class="col-md-6">
+        <form method="get" action="{% url 'liste_clients_vehicules' %}" class="d-flex justify-content-md-end mt-3 mt-md-0">
+            <div class="input-group" style="max-width: 400px;">
+                <input type="text" name="q" class="form-control border-primary" 
+                       placeholder="Nom, téléphone ou immatriculation..." value="{{ recherche }}">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                {% if recherche %}
+                    <a href="{% url 'liste_clients_vehicules' %}" class="btn btn-outline-secondary">Effacer</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Grille des fiches Clients -->
+<div class="row">
+    {% for client in clients %}
+        <div class="col-lg-6 mb-4">
+            <div class="card border-light shadow-sm h-100">
+                <div class="card-body">
+                    <!-- Entête fiche client -->
+                    <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-3">
+                        <div>
+                            <h4 class="card-title fw-bold text-dark mb-0">{{ client.utilisateur.get_full_name|upper }}</h4>
+                            <span class="badge bg-light text-primary border border-primary mt-1">ID Client: #{{ client.id }}</span>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-dark fw-bold"><i class="fa-solid fa-phone me-1 text-muted"></i>{{ client.telephone }}</div>
+                            <small class="text-muted">{{ client.utilisateur.email }}</small>
+                        </div>
+                    </div>
+                    
+                    {% if client.adresse %}
+                        <p class="small text-muted mb-3">
+                            <i class="fa-solid fa-location-dot me-1"></i><strong>Adresse :</strong> {{ client.adresse }}
+                        </p>
+                    {% endif %}
+
+                    <!-- Section véhicules liés -->
+                    <h6 class="fw-bold text-secondary mb-2"><i class="fa-solid fa-car me-2"></i>Véhicules enregistrés</h6>
+                    
+                    {% if client.vehicules.all %}
+                        <div class="list-group list-group-flush mb-3">
+                            {% for vehicule in client.vehicules.all %}
+                                <div class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center bg-transparent">
+                                    <div>
+                                        <span class="fw-bold text-primary">{{ vehicule.marque }} {{ vehicule.modele }}</span>
+                                        <br>
+                                        <small class="text-muted">Châssis / VIN : <code class="text-dark">{{ vehicule.chassis_vin }}</code></small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-primary font-monospace fs-6 px-2 py-1">{{ vehicule.immatriculation }}</span>
+                                        <br>
+                                        <small class="text-muted">{{ vehicule.kilometrage_actuel|floatformat:0 }} km</small>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning py-2 small mb-3">
+                            <i class="fa-solid fa-triangle-exclamation me-2"></i>Aucun véhicule enregistré pour ce client.
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Actions de bas de carte -->
+                <div class="card-footer bg-transparent border-top-0 d-flex gap-2 justify-content-end pb-3">
+                    <a href="{% url 'ajouter_vehicule' client.id %}" class="btn btn-outline-success btn-sm rounded-pill">
+                        <i class="fa-solid fa-plus me-1"></i>Ajouter un véhicule
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center py-4">
+                <i class="fa-solid fa-circle-info fa-2x mb-2 text-primary"></i>
+                <h5>Aucun client trouvé</h5>
+                <p class="mb-0 text-muted">Ajustez votre recherche ou ajoutez un nouveau profil client depuis l'administration.</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

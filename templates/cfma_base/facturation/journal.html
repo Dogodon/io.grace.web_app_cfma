@@ -1,0 +1,40 @@
+<!-- templates/sfma_base/facturation/journal.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark border-start border-4 border-warning ps-3" style="border-color: #FF6600 !important;">Journal de Facturation</h2>
+        <button class="btn px-4 py-2 fw-bold text-decoration-none transition" style="background-color: #ffffff; border: 2px solid #FF6600; color: #FF6600;">
+            <i class="fa-solid fa-download me-2"></i>Exporter le journal
+        </button>
+    </div>
+
+    <!-- Tableau des factures -->
+    <div class="card border-0 shadow-sm bg-white p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">N° Facture</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Client</th>
+                        <th scope="col">Immatriculation</th>
+                        <th scope="col">Montant TTC</th>
+                        <th scope="col">Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Vos données de facturation s'afficheront ici via Django loop -->
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fa-solid fa-receipt fa-2x mb-2 d-block text-secondary"></i>
+                            Aucune donnée de facturation disponible pour le moment.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
