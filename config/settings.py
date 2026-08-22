@@ -367,6 +367,29 @@ LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
 
 
+
+# config/settings.py
+
+# =========================================================================
+# 📧 CONFIGURATION DU SERVEUR D'ENVOI D'EMAILS (SMTP GMAIL)
+# =========================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '://gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# 🔐 IDENTIFIANTS LIÉS À LA SÉCURITÉ (À LIRE VIA CONFIG OU OS.ENVIRON)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Votre adresse email Gmail (ex: garage.cfma@gmail.com)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Le mot de passe d'application à 16 caractères généré à l'étape 1
+
+# 📬 L'adresse par défaut qui émet et reçoit les emails dans votre code
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+
+
+
+
+
+
 # raise InconsistentMigrationHistory(
 #     ...
 # )
