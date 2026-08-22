@@ -4,7 +4,7 @@ from .forms import DiagnosticRDVForm
 from .models import GalerieCommentaireClient # 🌟 Vérifiez l'orthographe exacte !
 
 
-from .models import GalerieCommentaireClient, GalerieCommentaireEvenement
+from .models import GalerieCommentaireClient, GalerieCommentaireEvenement, ElementService
 from django.core.mail import send_mail
 
 
@@ -51,12 +51,27 @@ def home(request):
     liste_com_clients = GalerieCommentaireClient.objects.all()
     liste_com_evenements = GalerieCommentaireEvenement.objects.all()
     
+    # 🎯 RECUPERATION DE VOS 7 SERVICES POUR LE CARROUSEL
+    liste_services = ElementService.objects.all()
+    
+    context = {
+        'commentaires': liste_com_clients,     # Pôle Atelier
+        'evenements': liste_com_evenements,       # Pôle Événements / Académie
+        'services': liste_services,               # 🎯 INJECTION INDISPENSABLE POUR LE MARQUEE !
+    }
+    return render(request, 'vitrine/index.html', context)
+
+""" def home(request):
+    # Récupération brute des données des deux pôles
+    liste_com_clients = GalerieCommentaireClient.objects.all()
+    liste_com_evenements = GalerieCommentaireEvenement.objects.all()
+    
     context = {
         'commentaires': liste_com_clients, # Pôle Atelier
         'evenements': liste_com_evenements,   # Pôle Événements / Académie
     }
     return render(request, 'vitrine/index.html', context)
-
+ """
 def galeries_commentaires_clients(request):
     liste_com = GalerieCommentaireClient.objects.all()
     return render(request, 'cfma_base/galeries_commentaires_clients.html', {'commentaires': liste_com})
