@@ -59,7 +59,7 @@
     <!-- 1. Barre de navigation commune Horizontale Style Litera (Marge mb-0 pour coller la sous-barre) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-0">
         <div class="container">
-            <img src="{% static 'images/logo_cfma.svg' %}" alt="Logo CFMA" width="36" height="36" class="d-inline-block align-top">
+            <img src="{% static 'images/logo_cfma0.svg' %}" alt="Logo CFMA" width="36" height="36" class="d-inline-block align-top">
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -67,8 +67,8 @@
             
             <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav me-auto">
-                    {% if not user.is_authenticated %}
-                        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
+<!--                     {% if not user.is_authenticated %}
+ -->                        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
                                                 <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
 
@@ -76,89 +76,6 @@
 <!--                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_contact' %}">Contact</a></li>
  -->                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
 
-                    {% else %}
-                        <!-- MENU COMPTE CLIENT -->
-                        {% if user.role == 'CLIENT' %}
-                                                <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
-
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
-<!--                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_contact' %}">Contact</a></li>
- -->                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
-
-
- <!-- 
-                            <li class="nav-item"><a class="nav-link active fw-bold" href="#"><i class="fa-solid fa-screwdriver-wrench me-1"></i>Mes Réparations</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-cubes me-1"></i>Pièces Achetées</a></li>
-                            <li class="nav-item d-none d-lg-flex align-items-center px-2">
-                                <span class="badge bg-secondary me-2">🚗 {{ user.profil_client.nombre_voitures_reparees|default:0 }} réparée(s)</span>
-                                <span class="badge bg-warning text-dark">⏳ Attente : {{ user.profil_client.temps_attente_moyen|default:"0 min" }}</span>
-                            </li>
-  -->                       <!-- MENU SECRÉTAIRE & PATRON -->
-                        {% elif user.role == 'SECRETAIRE' or user.role == 'PATRON' %}
-
-
-                                                <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
-
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
-<!--                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_contact' %}">Contact</a></li>
- -->                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
-
-
- <!-- 
-                            <li class="nav-item"><a class="nav-link active fw-bold" href="#"><i class="fa-solid fa-rectangle-list me-1"></i>Suivi Réparations</a></li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-white" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa-solid fa-chart-line me-1"></i>Activité & Équipes
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#"><i class="fa-solid fa-users me-2"></i>Performance Commerciaux</a>
-                                    <a class="dropdown-item" href="#"><i class="fa-solid fa-user-gear me-2"></i>Affectation Étudiants</a>
-                                </div>
-                            </li>
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-basket-shopping me-1"></i>Pièces Commandées</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-hourglass-half me-1"></i>Temps d'attente</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-file-invoice-dollar me-1"></i>Paiements Jour</a></li>
-  -->                       <!-- MENU APPRENANT (ÉTUDIANT) -->
-                        {% elif user.role == 'APPRENANT' %}
-                                                <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
-
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
-<!--                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_contact' %}">Contact</a></li>
- -->                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
-<!-- 
-                            <li class="nav-item"><a class="nav-link active fw-bold" href="#"><i class="fa-solid fa-book-open me-1"></i>Cours Suivis</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-gears me-1"></i>Mes Interventions</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-users me-1"></i>Équipe de Travail</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-wrench me-1"></i>Pièces Remplacées</a></li>
-                            <li class="nav-item"><a class="nav-link text-warning fw-bold" href="#"><i class="fa-solid fa-graduation-cap me-1"></i>Notes & Mentions</a></li>
-                            <li class="nav-item d-none d-lg-flex align-items-center px-2">
-                                <span class="badge bg-secondary"><i class="fa-solid fa-business-time me-1"></i>{{ user.profil_etudiant.temps_travail|default:"0h" }}</span>
-                            </li>
- -->                        <!-- MENU INFORMATICIEN -->
-                        {% elif user.role == 'INFORMATICIEN' %}
-                                                <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
-
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
-<!--                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_contact' %}">Contact</a></li>
- -->                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
-
-
- <!-- 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle active fw-bold text-white" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa-solid fa-square-plus me-1"></i>Édition Contenu
-                                </a>
-                            </li>
-  -->                       {% endif %}
-                    {% endif %}
                 </ul>
 
 <!-- 🔐 BLOC DE CONNEXION / DÉCONNEXION DROITE -->
