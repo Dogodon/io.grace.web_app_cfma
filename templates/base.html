@@ -72,43 +72,12 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
 
                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
-<!--                         <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_contact' %}">Contact</a></li>
- -->                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
 
                 </ul>
-
-<!-- 🔐 BLOC DE CONNEXION / DÉCONNEXION DROITE -->
-<!-- <div class="d-flex align-items-center mt-2 mt-lg-0">
-    {% if user.is_authenticated %}
-        <div class="text-white me-3 d-none d-sm-block text-end">
-            <small class="d-block opacity-75">Connecté en tant que :</small>
-            <strong class="text-warning">{{ user.username }}</strong> <span class="badge bg-dark ms-1">{{ user.role }}</span>
-        </div>
-        
-        <!- 🔄 Modification ici : Utilisation d'un formulaire POST requis par Django 5+ ->
-        <form action="{% url 'logout' %}" method="POST" class="d-inline m-0">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-outline-light btn-sm px-3">
-                <i class="fa-solid fa-right-from-bracket me-1"></i> Se déconnecter
-            </button>
-        </form>
-    {% else %}
-        <a href="{% url 'login' %}" class="btn btn-light btn-sm px-3 text-primary fw-bold shadow-sm">
-            <i class="fa-solid fa-right-to-bracket me-1"></i> Se connecter
-        </a>
-    {% endif %}
-</div> -->
-
-
             </div>
         </div>
     </nav>
-
-    <!-- =========================================================================
-        🎯 2. BARRE DE CONTACT & RÉSEAUX SOCIAUX PLACÉE EN DESSOUS (Marge mb-4 respectée)
-    ============================= -->
-
-
     <!-- =========================================================================
         🎯 2. BARRE DE CONTACT & RÉSEAUX SOCIAUX PLACÉE EN DESSOUS (Marge mb-4 respectée)
     ========================================================================== -->
@@ -124,15 +93,10 @@
                     <i class="fa-solid fa-phone text-primary me-1"></i>+225 07 09 10 36 54
                 </a>
             </div>
-            
-
-            <!-- Se déconnecter !!-->
-            <!-- Liens directs vers les applications de Réseaux Sociaux -->
             <div class="d-flex align-items-center gap-3 social-icons mt-1 mt-sm-0">
- <a href="https://wa.me" target="_blank" class="text-white text-decoration-none btn-whatsapp px-1" title="Discuter sur WhatsApp">
-    <i class="fa-brands fa-whatsapp fa-lg"></i>
-</a>
-
+                <a href="https://wa.me" target="_blank" class="text-white text-decoration-none btn-whatsapp px-1" title="Discuter sur WhatsApp">
+                    <i class="fa-brands fa-whatsapp fa-lg"></i>
+                </a>
                 <a href="https://www.facebook.com/Centre.cfma/" target="_blank" class="text-white text-decoration-none btn-facebook px-1" title="Nous suivre sur Facebook">
                     <i class="fa-brands fa-facebook fa-lg"></i>
                 </a>
@@ -142,19 +106,6 @@
             </div>
         </div>
     </div>
-
-
-
-
-
-<!-- Oui Miss  Mariama ajoutez si possible le *Lavage auto* et 
- le *Quick Service* , 
- la *Vidange* 
- le *Diagnostic* , 
- *formation en Mécanique*
- -->    
-
-    <!-- ZONE DE RENDU DYNAMIQUE DES PAGES -->
     <main class="py-4">
         <div class="container">
             <!-- ⚠️ UNIFICATION DES BLOCS POUR ÉVITER TOUT SYNTAX ERROR FUTURE -->
@@ -172,10 +123,11 @@
 
     <!-- Scripts officiels indispensables pour faire fonctionner les Dropdowns Litera -->
     <script src="https://jsdelivr.net"></script>
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <!-- 🎯 CORRECTION : Chargement via CDN officiel Bootstrap -->
+    <script src="https://jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
     <!-- Script indispensable pour faire tourner le carrousel Bootstrap 5 -->
     <script src="https://jsdelivr.net"></script>
-
 
 </body>
 </html>
