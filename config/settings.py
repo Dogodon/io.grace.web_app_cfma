@@ -521,6 +521,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
+LOGOUT_REDIRECT_URL = '/'  # Ou le nom de votre route d'accueil, par exemple 'home'
 
 
 

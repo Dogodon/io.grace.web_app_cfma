@@ -33,6 +33,7 @@ from cfma_base.views import * #votre_vue_1, votre_vue_2 # Importez uniquement le
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.auth import views as auth_views
 
 #app_name = 'cfma_base'
 
@@ -59,7 +60,9 @@ urlpatterns = [
 
     # Authentification et gestion des comptes
     path('connexion/', views.ConnexionPersonnaliseeView.as_view(), name='login'),
-    path('deconnexion/', LogoutView.as_view(next_page='home'), name='logout'),
+    #path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+
+    path('deconnexion/', LogoutView.as_view(next_page='/'), name='logout'),
     path('inscription/', views.inscription_universelle, name='inscription'),
     path('portail/', views.redirection_portail, name='redirection_portail'),
 
