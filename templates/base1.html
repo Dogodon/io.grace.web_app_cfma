@@ -59,27 +59,25 @@
     <!-- 1. Barre de navigation commune Horizontale Style Litera (Marge mb-0 pour coller la sous-barre) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-0">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
-                <img src="{% static 'images/logo_cfma0.png' %}" alt="Logo CFMA" width="36" height="36" class="d-inline-block align-top">
-            </a>
+            <img src="{% static 'images/logo_cfma0.png' %}" alt="Logo CFMA" width="36" height="36" class="d-inline-block align-top">
 
-            <!-- 📱 BOUTON BURGER CONFIGURÉ CORRECTEMENT POUR LES SMARTPHONES -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
             <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
+                <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
+                                                <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
+
+                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
+
                 </ul>
             </div>
         </div>
     </nav>
-
     <!-- =========================================================================
         🎯 2. BARRE DE CONTACT & RÉSEAUX SOCIAUX PLACÉE EN DESSOUS (Marge mb-4 respectée)
     ========================================================================== -->
@@ -102,15 +100,15 @@
                 <a href="https://www.facebook.com/Centre.cfma/" target="_blank" class="text-white text-decoration-none btn-facebook px-1" title="Nous suivre sur Facebook">
                     <i class="fa-brands fa-facebook fa-lg"></i>
                 </a>
-                <a href="https://www.tiktok.com/@cfma.garage.autom" target="_blank" class="text-white text-decoration-none btn-tiktok px-1" title="Regarder nos vidéos TikTok">
+                <a href="https://www.tiktok.com/@cfma.garage.autom?_r=1&_t=ZS-990hb7xeFlY" target="_blank" class="text-white text-decoration-none btn-tiktok px-1" title="Regarder nos vidéos TikTok">
                     <i class="fa-brands fa-tiktok fa-lg"></i>
                 </a>
             </div>
         </div>
     </div>
-
     <main class="py-4">
         <div class="container">
+            <!-- ⚠️ UNIFICATION DES BLOCS POUR ÉVITER TOUT SYNTAX ERROR FUTURE -->
             {% block dashboard_content %}{% endblock dashboard_content %}
             {% block content %}{% endblock content %}
         </div>
@@ -123,12 +121,13 @@
         </div>
     </footer>
 
-    <!-- =========================================================================
-        🎯 CORRECTION ET SÉCURISATION DES SCRIPTS POUR LE MODE SMARTPHONE
-    ========================================================================== -->
-    <!-- Script officiel unifié Bootstrap 5 (Contient Popper.js indispensable pour le burger et les dropdowns) -->
+    <!-- Scripts officiels indispensables pour faire fonctionner les Dropdowns Litera -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- 🎯 CORRECTION : Chargement via CDN officiel Bootstrap -->
     <script src="https://jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- Script indispensable pour faire tourner le carrousel Bootstrap 5 -->
+    <script src="https://jsdelivr.net"></script>
 
 </body>
 </html>
-
