@@ -404,7 +404,7 @@ def prendre_rdv_diagnostic(request):
                 "Veuillez recontacter ce client rapidement pour lui confirmer son créneau."
             )
 
-            # 🌐 CONFIGURATION DE L'API BREVO (CONTOURNEMENT DES PORTS DE RENDER)
+            # 🌐 CONFIGURATION DE L'API BREVO SÉCURISÉE ET PROPRE
             configuration = sib_api_v3_sdk.Configuration()
             
             if 'RENDER' in os.environ:
