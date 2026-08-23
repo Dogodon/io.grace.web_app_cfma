@@ -58,9 +58,9 @@ urlpatterns = [
 
 
     # Authentification et gestion des comptes
-    path('connexion/', views.ConnexionPersonnaliseeView.as_view(), name='login'),
-    path('deconnexion/', LogoutView.as_view(next_page='login'), name='logout'),
-    path('inscription/', views.inscription_universelle, name='inscription'),
+    path('connexion/', views.ConnexionPersonnaliseeView.as_view(), name='home'),
+    path('deconnexion/', LogoutView.as_view(next_page='home'), name='home'),
+    path('inscription/', views.inscription_universelle, name='home'),
     path('portail/', views.redirection_portail, name='redirection_portail'),
 
 
