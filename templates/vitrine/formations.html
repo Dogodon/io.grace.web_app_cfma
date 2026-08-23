@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block content %}
+
+
 <style>
     .custom-carousel-wrapper {
         position: relative;
@@ -149,8 +151,7 @@
         </p>
         <div class="d-flex justify-content-center gap-3 mt-4">
             <a href="#catalogue" class="btn btn-primary btn-lg rounded-pill px-4 fw-bold">Consulter le catalogue</a>
-<!--             <a href="{% url 'inscription' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">S'inscrire en ligne</a>
- -->        </div>
+        </div>
     </div>
 </div>
 
@@ -158,53 +159,44 @@
     2. CARROUSEL INTERACTIF DES PÔLES MÉTIERS (GESTION DYNAMIQUE ET IMAGES OPTIONNELLES)
 ========================================================================== -->
 <div class="row justify-content-center mb-5">
-    <div class="col-lg-10">
+    <div class="col-lg-12">
         <h3 class="fw-bold text-dark text-center mb-4">
             <i class="fa-solid fa-images me-2 text-primary"></i>Immersion au cœur de nos Ateliers
         </h3>
         
         <div class="custom-carousel-wrapper shadow border rounded-3 overflow-hidden" style="position: relative;">
-<!-- 🎯 CARROUSEL PLEIN ÉCRAN (LARGEUR ET HAUTEUR MAXIMALES) -->
-{% for formation in formations %}
-<div class="custom-carousel-item w-100 vh-100 position-relative {% if forloop.first %}active{% endif %}" style="overflow: hidden;">
-    
-    <!-- 🖼️ Image de fond adaptative (Full Space Cover) -->
-    {% if formation.image %}
-        <img src="{{ formation.image.url }}" alt="{{ formation.titre }}" class="w-100 h-100 position-absolute start-0 top-0 object-fit-cover" style="z-index: 1;">
-        <!-- Voile noir pour garantir la lisibilité du texte blanc -->
-        <div class="w-100 h-100 position-absolute start-0 top-0" style="background: rgba(0, 0, 0, 0.55); z-index: 2;"></div>
-    {% else %}
-        <!-- Fond dégradé de secours si pas d'image -->
-        <div class="w-100 h-100 position-absolute start-0 top-0" style="background: linear-gradient(135deg, #1f2327, #0b0c10); z-index: 1;"></div>
-    {% endif %}
+            <div class="custom-carousel-inner" id="customCarouselInner">
+                
+                {% for formation in formations %}
+                <div class="custom-carousel-item {% if forloop.first %}active{% endif %}">
+                    {% if formation.image %}
+                        <img src="{{ formation.image.url }}" alt="{{ formation.titre }}">
+                    {% else %}
+                        <div class="w-100 h-100 position-absolute start-0 top-0" style="background: linear-gradient(135deg, #343a40, #212529); z-index: 1;"></div>
+                    {% endif %}
 
-    <!-- 📝 Contenu centré verticalement et horizontalement au milieu de l'espace -->
-    <div class="custom-carousel-caption position-absolute top-50 start-50 translate-middle text-center w-75 p-4" style="z-index: 5; max-width: 900px;">
-        <i class="fa-solid fa-graduation-cap text-warning fa-4x mb-4 animated fadeInDown" style="color: #FF6600 !important;"></i>
-        <h1 class="display-4 fw-extrabold text-white text-uppercase tracking-wider mb-3">{{ formation.badge_niveau }} : {{ formation.titre }}</h1>
-        <p class="lead text-light mb-4 px-md-5 fs-4">{{ formation.description_generale|truncatewords:15 }}</p>
-        
-        <div class="mt-4" style="pointer-events: auto;">
-            <span class="badge px-4 py-3 rounded-pill fw-bold me-2 fs-6 shadow-sm" style="background-color: #ffffff; color: #FF6600; border: 2px solid #FF6600;">
-                <i class="fa-solid fa-clock me-2"></i>{{ formation.duree }}
-            </span>
-            <a href="#catalogue" class="btn px-4 py-3 rounded-pill fw-bold text-white shadow-sm border-0 transition" style="background-color: #FF6600;">
-                <i class="fa-solid fa-circle-info me-2"></i>En savoir plus
-            </a>
-        </div>
-    </div>
-</div>
-{% empty %}
-<!-- Écran de secours plein écran si catalogue vide -->
-<div class="custom-carousel-item w-100 vh-100 position-relative active" style="background: linear-gradient(135deg, #1f2327, #0b0c10);">
-    <div class="custom-carousel-caption position-absolute top-50 start-50 translate-middle text-center w-75" style="z-index: 5;">
-        <i class="fa-solid fa-triangle-exclamation text-warning fa-4x mb-4"></i>
-        <h2 class="display-5 fw-bold text-white text-uppercase">Aucune formation disponible</h2>
-        <p class="lead text-muted fs-5">Nos équipes mettent actuellement à jour le catalogue technique de l'académie.</p>
-    </div>
-</div>
-{% endfor %}
+                    <div class="custom-carousel-caption" style="z-index: 5;">
+                        <i class="fa-solid fa-graduation-cap text-warning fa-3x mb-3"></i>
+                        <h3 class="fw-bold text-white text-uppercase tracking-wide">{{ formation.badge_niveau }} : {{ formation.titre }}</h3>
+                        <p class="text-light">{{ formation.description_generale|truncatewords:25 }}</p>
+                        
+                        <div class="mt-3" style="pointer-events: auto;">
+                            <span class="badge bg-success px-3 py-2 rounded-pill fw-bold me-2"><i class="fa-solid fa-clock me-1"></i>{{ formation.duree }}</span>
+                            <a href="#catalogue" class="badge bg-primary px-3 py-2 rounded-pill fw-bold text-decoration-none">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="custom-carousel-item active" style="background: linear-gradient(135deg, #2c3e50, #000000);">
+                    <div class="custom-carousel-caption" style="z-index: 5;">
+                        <i class="fa-solid fa-triangle-exclamation text-warning fa-3x mb-3"></i>
+                        <h3 class="fw-bold text-white">Aucune formation disponible</h3>
+                        <p class="text-light">Nos équipes mettent actuellement à jour le catalogue.</p>
+                    </div>
+                </div>
+                {% endfor %}
 
+            </div>
 
             <!-- Boutons de navigation reliés directement aux fonctions JS -->
             <button class="custom-carousel-btn prev" type="button" onclick="moveSlide(-1)" style="z-index: 999 !important; position: absolute;">❮</button>
@@ -219,123 +211,6 @@
         </div>
     </div>
 </div>
-
-
-<!--
-<!- =========================================================================
-    2. CARROUSEL INTERACTIF DES PÔLES MÉTIERS (7 IMAGES - VERSION AUTONOME)
-========================================================================== ->
-<div class="row justify-content-center mb-5">
-    <div class="col-lg-10">
-        <h3 class="fw-bold text-dark text-center mb-4">
-            <i class="fa-solid fa-images me-2 text-primary"></i>Immersion au cœur de nos Ateliers
-        </h3>
-        
-        <!- Conteneur Principal du Carrousel Sur Mesure ->
-        <div class="custom-carousel-wrapper shadow border rounded-3 overflow-hidden">
-            <div class="custom-carousel-inner" id="customCarouselInner">
-                
-                <!- Slide 1 : Diagnostic Électronique ->
-                <div class="custom-carousel-item active">
-                    <img src="{% static 'images/img1.svg' %}" alt="Pôle Diagnostic">
-                    <div class="custom-carousel-caption">
-                        <i class="fa-solid fa-laptop-code text-info fa-4x mb-3"></i>
-                        <h3 class="fw-bold text-white">Pôle Diagnostic & Électronique Embarquée</h3>
-                        <p class="col-md-8 mx-auto text-light">Apprenez à maîtriser les valises de diagnostic multimarques de dernière génération pour analyser et décoder les calculateurs modernes.</p>
-                        <span class="badge bg-info px-3 py-2 rounded-pill fw-bold">Équipements Haute Technologie</span>
-                    </div>
-                </div>
-
-                <!- Slide 2 : Maintenance Mécanique ->
-                <div class="custom-carousel-item">
-                    <img src="{% static 'images/img2.svg' %}" alt="Maintenance Mécanique">
-                    <div class="custom-carousel-caption">
-                        <i class="fa-solid fa-screwdriver-wrench text-success fa-4x mb-3"></i>
-                        <h3 class="fw-bold text-white">Pôle Maintenance Mécanique Traditionnelle</h3>
-                        <p class="col-md-8 mx-auto text-light">De la révision complète au démontage de moteurs thermiques (Essence et Diesel). Maîtrisez les systèmes de freinage, de suspension et de transmission.</p>
-                        <span class="badge bg-success px-3 py-2 rounded-pill fw-bold">Pratique 100% Terrain</span>
-                    </div>
-                </div>
-
-                <!- Slide 3 : Motorisations Hybrides & Électriques ->
-                <div class="custom-carousel-item">
-                    <img src="{% static 'images/img3.svg' %}" alt="Moteurs Hybrides">
-                    <div class="custom-carousel-caption">
-                        <i class="fa-solid fa-bolt text-warning fa-4x mb-3"></i>
-                        <h3 class="fw-bold text-white">Pôle Véhicules Électriques & Hybrides</h3>
-                        <p class="col-md-8 mx-auto text-light">Préparez-vous aux technologies de demain. Formez-vous aux règles d'or de la sécurité et obtenez vos habilitations électriques professionnelles.</p>
-                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">Métier d'Avenir</span>
-                    </div>
-                </div>
-
-                <!- Slide 4 : Climatisation Automobile ->
-                <div class="custom-carousel-item">
-                    <img src="{% static 'images/img4.svg' %}" alt="Climatisation">
-                    <div class="custom-carousel-caption">
-                        <i class="fa-solid fa-snowflake text-primary fa-4x mb-3"></i>
-                        <h3 class="fw-bold text-white">Pôle Climatisation & Fluides Frigorigènes</h3>
-                        <p class="col-md-8 mx-auto text-light">Maîtrisez la charge, la détection de fuites et la maintenance des circuits de traitement d'air conformes aux réglementations environnementales.</p>
-                        <span class="badge bg-primary px-3 py-2 rounded-pill fw-bold">Certification Fluides</span>
-                    </div>
-                </div>
-
-                <!- Slide 5 : Liaisons au Sol & Freinage ->
-                <div class="custom-carousel-item">
-                    <img src="{% static 'images/img5.svg' %}" alt="Liaisons au Sol">
-                    <div class="custom-carousel-caption">
-                        <i class="fa-solid fa-circle-notch text-danger fa-4x mb-3"></i>
-                        <h3 class="fw-bold text-white">Pôle Liaisons au Sol & Freinage</h3>
-                        <p class="col-md-8 mx-auto text-light">Devenez expert en géométrie des trains roulants, systèmes de freinage ABS/ESP et gestion des suspensions pilotées.</p>
-                        <span class="badge bg-danger px-3 py-2 rounded-pill fw-bold">Sécurité Routière</span>
-                    </div>
-                </div>
-
-                <!- Slide 6 : Carrosserie & Peinture ->
-                <div class="custom-carousel-item">
-                    <img src="{% static 'images/img6.svg' %}" alt="Carrosserie">
-                    <div class="custom-carousel-caption">
-                        <i class="fa-solid fa-spray-can text-secondary fa-4x mb-3"></i>
-                        <h3 class="fw-bold text-white">Pôle Carrosserie & Peinture Haute Précision</h3>
-                        <p class="col-md-8 mx-auto text-light">Maîtrisez le débosselage, le redressage de châssis et l'application des peintures de finition en cabine ventilée.</p>
-                        <span class="badge bg-secondary px-3 py-2 rounded-pill fw-bold">Art & Technique</span>
-                    </div>
-                </div>
-
-                <!- Slide 7 : Réception & Conseil Client ->
-                <div class="custom-carousel-item">
-                    <img src="{% static 'images/img7.svg' %}" alt="Conseil Client">
-                    <div class="custom-carousel-caption">
-                        <i class="fa-solid fa-user-tie text-light fa-4x mb-3"></i>
-                        <h3 class="fw-bold text-white">Pôle Service Client & Gestion d'Atelier</h3>
-                        <p class="col-md-8 mx-auto text-light">Développez vos compétences en réception de véhicule, rédaction de devis et gestion d'une équipe de techniciens.</p>
-                        <span class="badge bg-light text-dark px-3 py-2 rounded-pill fw-bold">Management</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <!- Boutons de contrôle de navigation (Gauche/Droite) ->
-            <button class="custom-carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
-            <button class="custom-carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
-
-            <!- Indicateurs de Position (Points du bas) ->
-            <div class="custom-carousel-dots" id="customCarouselDots">
-                <span class="dot active" onclick="currentSlide(0)"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
-        </div>
-    </div>
-</div> -->
-
-<!-- =========================================================================
-    STYLES CSS ET SCRIPT POUR LE FONCTIONNEMENT AUTONOME
-========================================================================== -->
-
 
 
 <!-- =========================================================================
@@ -439,10 +314,8 @@
                 </div>
      </div>
         </div>
-<!--                 S'inscrire à la sessionDiplôme d'ÉtatDurée : 3 ansBac Pro Métiers de l'AutomobileUn parcours complet orienté vers l'autonomie et la gestion d'équipe en atelier. 
-                Ce diplôme englobe la mécanique lourde, l'initiation aux systèmes hybrides et l'accueil/conseil de la clientèle du garage.Réparation de boîtes de vitessesHabilitation électrique B2VL incluseManagement d'un îlot de travailDemander la brochure
-                 -->
-       
+
+
 
 
    <script>
@@ -493,6 +366,11 @@
         resetTimer();
     });
 </script>
+
+
+
 {% endblock %}
+
+
 
 

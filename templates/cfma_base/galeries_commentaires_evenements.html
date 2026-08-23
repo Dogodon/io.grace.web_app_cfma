@@ -151,6 +151,56 @@
         transition: background 0.2s;
     }
     .card-dot.active { background: #ffffff; width: 16px; border-radius: 4px; }
+
+
+    /* =========================================================================
+    🔓 LIBÉRATION DES CLICS SUR LES BOUTONS "LIRE PLUS" / "EN SAVOIR PLUS"
+========================================================================== */
+
+/* Force le bouton à capter le clic de la souris et du doigt sur mobile */
+.custom-carousel-caption a, 
+.custom-carousel-caption button,
+.custom-carousel-caption .mt-3,
+.custom-carousel-caption [style*="pointer-events: auto"] {
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 9999 !important; /* Passe au-dessus du voile noir et de la description */
+}
+
+/* Optionnel : Assure que le conteneur global transmet bien les actions */
+.custom-card-slide {
+    pointer-events: none;
+}
+.custom-card-slide img {
+    pointer-events: none;
+}
+
+
+
+/* =========================================================================
+    📝 ANIMATION INTÉLLIGENTE DU TEXTE DES ÉVÉNEMENTS
+========================================================================== */
+.commentaire-texte-box {
+    position: relative;
+    line-height: 1.6;
+}
+
+.texte-complet {
+    transition: opacity 0.4s ease-in-out;
+    opacity: 0;
+}
+
+/* S'active dès que la fonction JS valide l'ouverture */
+.texte-complet.active {
+    opacity: 1 !important;
+}
+
+/* Style optionnel pour l'interaction du bouton vert */
+.btn-lire-suite:hover {
+    color: #be532e !important; /* Devient plus sombre ou change de couleur au survol */
+}
+
+
 </style>
 
 <!-- =========================================================================
@@ -186,7 +236,7 @@
     function moveCardSlide(eventId, step) {
         clearInterval(cardTimers[eventId]);
         const container = document.getElementById(`carouselContainer${eventId}`);
-        let currentIndex = parseInt(container.getAttribute('data-slide-index'));
+        let currentIndex = parseInt(container.getAttribute('data-slide-index')) || 0;
         currentIndex += step;
         showCardSlide(eventId, currentIndex);
         resetCardTimer(eventId);
@@ -199,26 +249,70 @@
     }
 
     function resetCardTimer(eventId) {
+        clearInterval(cardTimers[eventId]); // 🎯 SÉCURITÉ : Évite l'accumulation de minuteurs fantômes
         const container = document.getElementById(`carouselContainer${eventId}`);
         if (!container) return;
         const slides = container.querySelectorAll('.custom-card-slide');
         
         if (slides.length > 1) {
             cardTimers[eventId] = setInterval(() => {
-                let currentIndex = parseInt(container.getAttribute('data-slide-index'));
+                let currentIndex = parseInt(container.getAttribute('data-slide-index')) || 0;
                 currentIndex += 1;
                 showCardSlide(eventId, currentIndex);
-            }, 4000); // Fait tourner l'image toutes les 4 secondes
+            }, 4000); 
         }
     }
 
-    // Lance le défilement automatique indépendant pour chaque carte au chargement de la page
+    // 🎯 SÉCURITÉ SUPPLÉMENTAIRE : Coupe le défilement automatique si on clique sur un bouton d'action
+    function stopCardCarousel(eventId) {
+        console.log("-> Arrêt du carrousel pour lecture ou action :", eventId);
+        clearInterval(cardTimers[eventId]);
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const carousels = document.querySelectorAll('.custom-card-carousel');
         carousels.forEach(carousel => {
             const id = carousel.getAttribute('data-event-id');
-            resetCardTimer(id);
+            if (id) {
+                resetCardTimer(id);
+            }
         });
     });
+    function toggleCommentaire(button) {
+    // 🎯 Trouve le conteneur de texte de la carte actuelle
+    const cardBody = button.closest('.card-body');
+    const texteCourt = cardBody.querySelector('.texte-court');
+    const texteComplet = cardBody.querySelector('.texte-complet');
+    const icone = button.querySelector('.toggle-icone');
+    const label = button.querySelector('span');
+
+    if (!texteComplet) return;
+
+    // 🔄 Inversion de l'affichage
+    if (texteComplet.classList.contains('d-none')) {
+        // Mode : Déplier le texte
+        texteCourt.classList.add('d-none');
+        texteComplet.classList.remove('d-none');
+        
+        // Petit déclencheur pour l'effet d'apparition fluide
+        setTimeout(() => {
+            texteComplet.classList.add('active');
+        }, 10);
+
+        label.textContent = "Réduire";
+        icone.className = "fa-solid fa-arrow-up ms-1 small toggle-icone";
+    } else {
+        // Mode : Replier le texte
+        texteComplet.classList.remove('active');
+        texteComplet.classList.add('d-none');
+        texteCourt.classList.remove('d-none');
+
+        label.textContent = "Lire la suite";
+        icone.className = "fa-solid fa-arrow-right ms-1 small toggle-icone";
+    }
+}
+
 </script>
+
+
 {% endblock %}
