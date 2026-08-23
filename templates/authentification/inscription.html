@@ -21,7 +21,7 @@
                     </div>
                 {% endif %}
 
-                <form method="post" action="{% url 'inscription' %}" novalidate>
+                <form method="post" action="{% url 'home' %}" novalidate>
                     {% csrf_token %}
 
                     <h5 class="text-primary border-bottom pb-2 mb-3"><i class="fa-solid fa-id-card me-2"></i>Identité de connexion</h5>
@@ -116,7 +116,7 @@
             </div>
             <div class="card-footer bg-light text-center py-3 border-top">
                 <span class="text-muted">Déjà inscrit ?</span>
-                <a href="{% url 'login' %}" class="link-success fw-bold text-decoration-none ms-1">Se connecter</a>
+                <a href="{% url 'home' %}" class="link-success fw-bold text-decoration-none ms-1">Se connecter</a>
             </div>
         </div>
     </div>

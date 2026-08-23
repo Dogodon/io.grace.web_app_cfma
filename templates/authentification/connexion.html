@@ -18,7 +18,7 @@
                     {% endfor %}
                 {% endif %}
 
-                <form method="post" action="{% url 'login' %}" novalidate>
+                <form method="post" action="{% url 'home' %}" novalidate>
                     {% csrf_token %}
                     
                     {% if form.non_field_errors %}
@@ -59,7 +59,7 @@
             </div>
             <div class="card-footer bg-light text-center py-3 border-top">
                 <span class="text-muted">Nouveau sur la plateforme ?</span>
-                <a href="{% url 'inscription' %}" class="link-primary fw-bold text-decoration-none ms-1">Créer un compte</a>
+                <a href="{% url 'home' %}" class="link-primary fw-bold text-decoration-none ms-1">Créer un compte</a>
             </div>
         </div>
     </div>
