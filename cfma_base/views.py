@@ -401,12 +401,15 @@ def prendre_rdv_diagnostic(request):
             # Mettez à jour uniquement la partie try/except dans votre fonction prendre_rdv_diagnostic
 
             try:
+                # Dans la fonction prendre_rdv_diagnostic de votre fichier views.py :
+
                 email = EmailMessage(
                     subject=sujet,
                     body=message_contenu,
                     from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.DEFAULT_FROM_EMAIL],
+                    to=['dogodonmtraore@gmail.com'], # 🎯 Mettez une AUTRE adresse email ici pour tester
                 )
+
                 
                 # 🎯 CORRECTION : fail_silently=True empêche le site de planter (plus d'erreur 500)
                 # Même si l'email bloque, le client valide son rendez-vous proprement.
