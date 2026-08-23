@@ -500,24 +500,25 @@ DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 # config/settings.py
 
 # =========================================================================
-# 📧 CONFIGURATION SMTP BREVO (CONTOURNEMENT SÉCURISÉ POUR RENDER GRATUIT)
+# 📧 CONFIGURATION SMTP BREVO AVEC ROUTAGE IP DIRECT (ANTI-BLOCAGE RENDER)
 # =========================================================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = '://brevo.com'  # 🎯 Le relais universel Brevo
+
+# 🎯 On utilise directement l'adresse IP fixe du relais Brevo pour contourner le DNS
+EMAIL_HOST = '185.107.232.248'  
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_TIMEOUT = 10
 
 if 'RENDER' in os.environ:
-    # Variables à mettre à jour sur l'interface Render
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')      # Votre email de compte Brevo
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # La clé SMTP secrète Brevo
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 else:
-    # Développement local sur votre Mac
     EMAIL_HOST_USER = config('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 

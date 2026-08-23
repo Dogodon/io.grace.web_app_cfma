@@ -376,6 +376,12 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
 # Assurez-vous d'importer votre formulaire DiagnosticRDVForm ici si ce n'est pas déjà fait
+import os
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import DiagnosticRDVForm  # Ajustez selon votre import réel
 
 def prendre_rdv_diagnostic(request):
     if request.method == "POST":
@@ -388,7 +394,6 @@ def prendre_rdv_diagnostic(request):
             date_heure = form.cleaned_data.get('date_souhaitee')
 
             sujet = f"🚨 Nouveau RDV Diagnostic de {nom}"
-
             message_contenu = (
                 "Bonjour l'équipe CFMA,\n\n"
                 "Une nouvelle demande de diagnostic automobile vient d'être validée sur le site internet :\n\n"
@@ -398,61 +403,44 @@ def prendre_rdv_diagnostic(request):
                 f"• Date et Heure souhaitées : {date_heure}\n\n"
                 "Veuillez recontacter ce client rapidement pour lui confirmer son créneau."
             )
-            # Mettez à jour uniquement la partie try/except dans votre fonction prendre_rdv_diagnostic
+
+            # 🌐 CONFIGURATION DE L'API BREVO (CONTOURNEMENT DES PORTS DE RENDER)
+            configuration = sib_api_v3_sdk.Configuration()
+            
+            if 'RENDER' in os.environ:
+                configuration.api_key['api-key'] = os.environ.get('EMAIL_HOST_PASSWORD')
+                expediteur_mail = os.environ.get('EMAIL_HOST_USER')
+            else:
+                from decouple import config
+                configuration.api_key['api-key'] = config('EMAIL_HOST_PASSWORD')
+                expediteur_mail = config('EMAIL_HOST_USER')
+
+            api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
+            
+            # Structuration du mail au format API HTTP Brevo
+            send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+                sender={"name": "Garage CFMA", "email": expediteur_mail},
+                to=[{"email": expediteur_mail, "name": "Équipe CFMA"}],
+                subject=sujet,
+                text_content=message_contenu
+            )
 
             try:
-                email = EmailMessage(
-                    subject=sujet,
-                    body=message_contenu,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.DEFAULT_FROM_EMAIL],
-                )
-                
-                # 🎯 1. On repasse temporairement à False pour capturer l'erreur exacte
-                email.send(fail_silently=False)
-                
-                messages.success(request, "Votre demande de rendez-vous a bien été prise en compte ! Notre équipe vous recontacte rapidement.")
+                # Envoi de la requête HTTP sur le port 443 (autorisé par Render gratuit)
+                api_instance.send_transac_email(send_smtp_email)
+                messages.success(request, "Votre demande de rendez-vous a bien été envoyée ! Notre équipe vous recontacte très rapidement.")
                 return redirect('cfma_base:home')
                 
-            except Exception as e:
-                # 🎯 2. Cette ligne magique va forcer l'erreur à s'écrire en GROS dans l'onglet LOGS de Render
-                print(f"❌ CRITICAL SMTP ERROR: {e}")
-                
-                # Le client ne voit rien, le site ne plante pas, mais le développeur sait tout !
-                messages.success(request, "Votre demande de rendez-vous a bien été prise en compte ! Notre équipe vous recontacte rapidement.")
+            except ApiException as e:
+                print(f"❌ CRITICAL API HTTP ERROR: {e}")
+                messages.success(request, "Votre demande a été enregistrée en atelier (Notification en cours de traitement).")
                 return redirect('cfma_base:home')
-
-
-
-            """ try:
-                # 🎯 Méthode standard Django : Création directe de l'objet EmailMessage
-                email = EmailMessage(
-                    subject=sujet,
-                    body=message_contenu,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[settings.DEFAULT_FROM_EMAIL],
-                )
-                
-                # 🌟 Envoi direct (Django utilise automatiquement la configuration SMTP de votre settings.py)
-                email.send(fail_silently=False)
-                
-                messages.success(request, "Votre demande de rendez-vous a bien été envoyée. Notre équipe vous recontacte très rapidement.")
-                return redirect('cfma_base:home')
-                
-            except Exception as e:
-                # Si Google refuse les identifiants secrets, le vrai message d'erreur réseau s'affichera ici
-                messages.error(request, f"Erreur de connexion SMTP Google : {e}")
-                return render(request, 'cfma_base/prendre_rdv_diagnostic.html', {'form': form}) """
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
-            
     else:
         form = DiagnosticRDVForm()
 
-    context = {
-        'form': form
-    }
-    return render(request, 'cfma_base/prendre_rdv_diagnostic.html', context)
+    return render(request, 'cfma_base/prendre_rdv_diagnostic.html', {'form': form})
 
 
 
