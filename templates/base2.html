@@ -1,0 +1,187 @@
+/* =========================================================
+   BARRE CONTACT & RÉSEAUX SOCIAUX
+========================================================= */
+
+.top-contact-bar {
+    background-color: #c8c4bf;
+    color: #fff;
+    font-size: 0.82rem;
+    padding: 6px 0;
+    margin-bottom: 0 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.contact-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Contacts */
+
+.contact-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+.contact-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.75);
+    white-space: nowrap;
+}
+
+.btn-phone {
+    color: #fff !important;
+    white-space: nowrap;
+    font-size: 0.82rem;
+
+    transition: color 0.2s ease;
+}
+
+.btn-phone:hover {
+    color: #ec6f45 !important;
+}
+
+/* Réseaux sociaux */
+
+.social-icons {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.social-icons a {
+    width: 28px;
+    height: 28px;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 !important;
+    border-radius: 5px;
+
+    flex-shrink: 0;
+
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.social-icons a:hover {
+    transform: translateY(-2px);
+}
+
+.btn-whatsapp:hover {
+    color: #25D366 !important;
+    background-color: rgba(255,255,255,0.15);
+}
+
+.btn-facebook:hover {
+    color: #1877F2 !important;
+    background-color: rgba(255,255,255,0.15);
+}
+
+.btn-tiktok:hover {
+    color: #010101 !important;
+    background-color: #fff;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .top-contact-bar {
+        padding: 5px 0;
+    }
+
+    .contact-inner {
+        gap: 5px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .contact-info {
+        gap: 5px;
+    }
+
+    .contact-label {
+        display: none !important;
+    }
+
+    .btn-phone {
+        font-size: 0.68rem;
+    }
+
+    .btn-phone i {
+        font-size: 0.65rem;
+        margin-right: 2px !important;
+    }
+
+    .social-icons {
+        gap: 1px;
+    }
+
+    .social-icons a {
+        width: 25px;
+        height: 25px;
+    }
+
+    .social-icons i {
+        font-size: 0.88rem;
+    }
+}
+
+
+/* =========================================================
+   TRÈS PETITS TÉLÉPHONES
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .contact-inner {
+        gap: 3px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .contact-info {
+        gap: 3px;
+    }
+
+    .btn-phone {
+        font-size: 0.61rem;
+    }
+
+    .btn-phone i {
+        font-size: 0.58rem;
+        margin-right: 1px !important;
+    }
+
+    .social-icons {
+        gap: 0;
+    }
+
+    .social-icons a {
+        width: 23px;
+        height: 23px;
+    }
+
+    .social-icons i {
+        font-size: 0.78rem;
+    }
+}
