@@ -401,27 +401,27 @@ def prendre_rdv_diagnostic(request):
             # Mettez à jour uniquement la partie try/except dans votre fonction prendre_rdv_diagnostic
 
             try:
-                # Dans la fonction prendre_rdv_diagnostic de votre fichier views.py :
-
                 email = EmailMessage(
                     subject=sujet,
                     body=message_contenu,
                     from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=['dogodonmtraore@gmail.com'], # 🎯 Mettez une AUTRE adresse email ici pour tester
+                    to=[settings.DEFAULT_FROM_EMAIL],
                 )
-
                 
-                # 🎯 CORRECTION : fail_silently=True empêche le site de planter (plus d'erreur 500)
-                # Même si l'email bloque, le client valide son rendez-vous proprement.
-                email.send(fail_silently=True) 
+                # 🎯 1. On repasse temporairement à False pour capturer l'erreur exacte
+                email.send(fail_silently=False)
                 
                 messages.success(request, "Votre demande de rendez-vous a bien été prise en compte ! Notre équipe vous recontacte rapidement.")
                 return redirect('cfma_base:home')
                 
             except Exception as e:
-                # Capture les erreurs sans casser le site
-                messages.warning(request, f"Le rendez-vous est enregistré en base de données, mais la notification email a échoué : {e}")
+                # 🎯 2. Cette ligne magique va forcer l'erreur à s'écrire en GROS dans l'onglet LOGS de Render
+                print(f"❌ CRITICAL SMTP ERROR: {e}")
+                
+                # Le client ne voit rien, le site ne plante pas, mais le développeur sait tout !
+                messages.success(request, "Votre demande de rendez-vous a bien été prise en compte ! Notre équipe vous recontacte rapidement.")
                 return redirect('cfma_base:home')
+
 
 
             """ try:
