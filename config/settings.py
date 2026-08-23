@@ -499,17 +499,15 @@ DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 
 # config/settings.py (Tout en bas du fichier)
 
-# config/settings.py
 
 # =========================================================================
-# 📧 CONFIGURATION SMTP AVEC CONTOURNEMENT DE RÉSOLUTION DNS RENDER
+# 📧 CONFIGURATION SMTP NETTOYÉE ET SÉCURISÉE AVEC TIMEOUT
 # =========================================================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-# 🎯 On utilise directement l'adresse IP publique du cluster SMTP de Google
-EMAIL_HOST = '142.251.4.108'  # Équivalent direct de ://gmail.com
+EMAIL_HOST = '://gmail.com'  
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 10  # 🎯 Évite les chargements infinis si le réseau sature
 
 if 'RENDER' in os.environ:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -519,6 +517,7 @@ else:
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 

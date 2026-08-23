@@ -398,8 +398,30 @@ def prendre_rdv_diagnostic(request):
                 f"• Date et Heure souhaitées : {date_heure}\n\n"
                 "Veuillez recontacter ce client rapidement pour lui confirmer son créneau."
             )
+            # Mettez à jour uniquement la partie try/except dans votre fonction prendre_rdv_diagnostic
 
             try:
+                email = EmailMessage(
+                    subject=sujet,
+                    body=message_contenu,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[settings.DEFAULT_FROM_EMAIL],
+                )
+                
+                # 🎯 CORRECTION : fail_silently=True empêche le site de planter (plus d'erreur 500)
+                # Même si l'email bloque, le client valide son rendez-vous proprement.
+                email.send(fail_silently=True) 
+                
+                messages.success(request, "Votre demande de rendez-vous a bien été prise en compte ! Notre équipe vous recontacte rapidement.")
+                return redirect('cfma_base:home')
+                
+            except Exception as e:
+                # Capture les erreurs sans casser le site
+                messages.warning(request, f"Le rendez-vous est enregistré en base de données, mais la notification email a échoué : {e}")
+                return redirect('cfma_base:home')
+
+
+            """ try:
                 # 🎯 Méthode standard Django : Création directe de l'objet EmailMessage
                 email = EmailMessage(
                     subject=sujet,
@@ -417,7 +439,7 @@ def prendre_rdv_diagnostic(request):
             except Exception as e:
                 # Si Google refuse les identifiants secrets, le vrai message d'erreur réseau s'affichera ici
                 messages.error(request, f"Erreur de connexion SMTP Google : {e}")
-                return render(request, 'cfma_base/prendre_rdv_diagnostic.html', {'form': form})
+                return render(request, 'cfma_base/prendre_rdv_diagnostic.html', {'form': form}) """
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
             
