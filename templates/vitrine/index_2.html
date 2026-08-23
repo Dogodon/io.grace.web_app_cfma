@@ -257,6 +257,101 @@
 
 
 
+<!-- =========================================================================
+    🎨 GRAND CARROUSEL IMAGES DÉFILANT CONTINU (CHARTE SFMA SÉCURISÉE)
+========================================================================== -->
+    <div class="grand-marquee-track">
+        
+        <!-- 🎯 BOUCLE DJANGO RE-STYLISÉE ET SÉCURISÉE -->
+        {% for service in services %}
+            <div class="grand-marquee-item">
+                <div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative">
+                    <div class="grand-card-image-box">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.titre }}" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #FF6600, #be532e);">
+                                <i class="fa-solid {{ service.icone_font_awesome|default:'fa-wrench' }} text-white fa-4x opacity-25"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;">
+                        <div class="footer-icon-circle d-flex align-items-center justify-content-center">
+                            <i class="fa-solid {{ service.icone_font_awesome|default:'fa-wrench' }} fa-lg"></i>
+                        </div>
+                        <h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">{{ service.titre }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <!-- ⚡ BLOCS DE SECOURS TECHNIQUE (SI LA BASE DE DONNÉES EST VIDE OU INTROUVABLE) -->
+            <!-- Pôle 1 -->
+            <div class="grand-marquee-item">
+                <div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative">
+                    <div class="grand-card-image-box" style="background: linear-gradient(135deg, #212529, #343a40);">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center"><i class="fa-solid fa-arrow-up-from-bracket text-white fa-4x opacity-25"></i></div>
+                    </div>
+                    <div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;">
+                        <div class="footer-icon-circle d-flex align-items-center justify-content-center"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></div>
+                        <h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">Pont élévateur</h5>
+                    </div>
+                </div>
+            </div>
+            <!-- Pôle 2 -->
+            <div class="grand-marquee-item">
+                <div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative">
+                    <div class="grand-card-image-box" style="background: linear-gradient(135deg, #212529, #343a40);">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center"><i class="fa-solid fa-shower text-white fa-4x opacity-25"></i></div>
+                    </div>
+                    <div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;">
+                        <div class="footer-icon-circle d-flex align-items-center justify-content-center"><i class="fa-solid fa-shower fa-lg"></i></div>
+                        <h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">Lavage Auto</h5>
+                    </div>
+                </div>
+            </div>
+            <!-- Pôle 3 -->
+            <div class="grand-marquee-item">
+                <div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative">
+                    <div class="grand-card-image-box" style="background: linear-gradient(135deg, #212529, #343a40);">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center"><i class="fa-solid fa-laptop-code text-white fa-4x opacity-25"></i></div>
+                    </div>
+                    <div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;">
+                        <div class="footer-icon-circle d-flex align-items-center justify-content-center"><i class="fa-solid fa-laptop-code fa-lg"></i></div>
+                        <h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">Diagnostic Électronique</h5>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <!-- 🔄 REPRODUCTION POUR LA BOUCLE CONTINU FLUIDE -->
+        {% for service in services %}
+            <div class="grand-marquee-item">
+                <div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative">
+                    <div class="grand-card-image-box">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" alt="{{ service.titre }}" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #FF6600, #be532e);">
+                                <i class="fa-solid {{ service.icone_font_awesome|default:'fa-wrench' }} text-white fa-4x opacity-25"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;">
+                        <div class="footer-icon-circle d-flex align-items-center justify-content-center">
+                            <i class="fa-solid {{ service.icone_font_awesome|default:'fa-wrench' }} fa-lg"></i>
+                        </div>
+                        <h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">{{ service.titre }}</h5>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <!-- Doublons des blocs de secours pour l'effet infini -->
+            <div class="grand-marquee-item"><div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative"><div class="grand-card-image-box" style="background: linear-gradient(135deg, #212529, #343a40);"><div class="w-100 h-100 d-flex align-items-center justify-content-center"><i class="fa-solid fa-arrow-up-from-bracket text-white fa-4x opacity-25"></i></div></div><div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;"><div class="footer-icon-circle d-flex align-items-center justify-content-center"><i class="fa-solid fa-arrow-up-from-bracket fa-lg"></i></div><h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">Pont élévateur</h5></div></div></div>
+            <div class="grand-marquee-item"><div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative"><div class="grand-card-image-box" style="background: linear-gradient(135deg, #212529, #343a40);"><div class="w-100 h-100 d-flex align-items-center justify-content-center"><i class="fa-solid fa-shower text-white fa-4x opacity-25"></i></div></div><div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;"><div class="footer-icon-circle d-flex align-items-center justify-content-center"><i class="fa-solid fa-shower fa-lg"></i></div><h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">Lavage Auto</h5></div></div></div>
+            <div class="grand-marquee-item"><div class="grand-service-card shadow-sm border-0 overflow-hidden position-relative"><div class="grand-card-image-box" style="background: linear-gradient(135deg, #212529, #343a40);"><div class="w-100 h-100 d-flex align-items-center justify-content-center"><i class="fa-solid fa-laptop-code text-white fa-4x opacity-25"></i></div></div><div class="grand-card-footer-box d-flex align-items-center gap-3 border-start border-3" style="border-color: #FF6600 !important;"><div class="footer-icon-circle d-flex align-items-center justify-content-center"><i class="fa-solid fa-laptop-code fa-lg"></i></div><h5 class="m-0 fw-bold text-dark text-uppercase tracking-wide">Diagnostic Électronique</h5></div></div></div>
+        {% endfor %}
+
+    </div>
 
 
 
@@ -288,8 +383,9 @@
                                 Voir les commentaires <i class="fa-solid fa-chevron-right small ms-1"></i>
                             </button>
                         </div>
-                        {% empty %}
+                    {% empty %}
                         <!-- 🚨 SÉCURITÉ DE SECOURS ABSOLUE SERVICES -->
+                        {% if commentaires.all %}
                             {% for com in commentaires.all %}
                                 <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
                                     <div>
@@ -301,7 +397,12 @@
                                     </button>
                                 </div>
                             {% endfor %}
- 
+                        {% else %}
+                            <div class="text-center py-3 text-muted small">
+                                <i class="fa-solid fa-comment-slash d-block fa-2x mb-2 text-opacity-25"></i>
+                                Aucune galerie de commentaire disponible pour le moment.
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
 
@@ -344,8 +445,9 @@
                                 Voir les événements <i class="fa-solid fa-chevron-right small ms-1"></i>
                             </button>
                         </div>
-                        {% empty %}
+                    {% empty %}
                         <!-- 🚨 SÉCURITÉ DE SECOURS ABSOLUE ÉVÉNEMENTS -->
+                        {% if evenements.all %}
                             {% for eve in evenements.all %}
                                 <div class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center bg-transparent border-bottom">
                                     <div>
@@ -357,7 +459,12 @@
                                     </button>
                                 </div>
                             {% endfor %}
-
+                        {% else %}
+                            <div class="text-center py-3 text-muted small">
+                                <i class="fa-solid fa-calendar-xmark d-block fa-2x mb-2 text-opacity-25"></i>
+                                Aucune galerie d'événements disponible pour le moment.
+                            </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
                 
