@@ -497,17 +497,19 @@ DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 
 
 
-# config/settings.py (Tout en bas du fichier)
-
+# config/settings.py
 
 # =========================================================================
-# 📧 CONFIGURATION SMTP NETTOYÉE ET SÉCURISÉE AVEC TIMEOUT
+# 📧 CONFIGURATION SMTP PROTOCOLE DIRECT SSL (SÉCURISÉ POUR RENDER)
 # =========================================================================
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = '://gmail.com'  
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_TIMEOUT = 10  # 🎯 Évite les chargements infinis si le réseau sature
+EMAIL_HOST = '://gmail.com'
+
+# 🎯 PASSAGE AU PROTOCOLE SSL DIRECT (PORT 465)
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False  # Désactivé au profit de SSL
+EMAIL_USE_SSL = True   # Activé de force pour sécuriser la liaison
+EMAIL_TIMEOUT = 10
 
 if 'RENDER' in os.environ:
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
@@ -517,6 +519,7 @@ else:
     EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 
