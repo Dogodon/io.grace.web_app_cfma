@@ -69,6 +69,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     
     
+    'django.contrib.sites',
+    'django.contrib.sitemaps',   
+    
     'cloudinary_storage',
 
     'django.contrib.staticfiles',
@@ -525,6 +528,8 @@ LOGOUT_REDIRECT_URL = '/'  # Ou le nom de votre route d'accueil, par exemple 'ho
 
 
 
+
+SITE_ID = 1
 
 
 # raise InconsistentMigrationHistory(
