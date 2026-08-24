@@ -38,6 +38,11 @@ from django.contrib.auth import views as auth_views
 #app_name = 'cfma_base'
 
 
+from django.contrib import admin
+from django.urls import path, include
+from django.shortcuts import reverse                 # <-- Règle l'erreur « reverse » n’est pas défini
+from django.contrib.sitemaps import Sitemap          # <-- Règle l'erreur « Sitemap » n’est pas défini
+from django.contrib.sitemaps.views import sitemap
 
 
 
@@ -48,7 +53,7 @@ class StaticViewSitemap(Sitemap):
 
     def items(self):
         # Mettez ici les "names" de vos vues définies dans vos urls.py
-        return ['home', 'actualites', 'services', 'formations', 'apropos']
+        return ['cfma_base:home', 'catalogue_actualites', 'catalogue_services', 'catalogue_formations', 'catalogue_contact']
 
     def location(self, item):
         return reverse(item)
@@ -58,8 +63,21 @@ sitemaps = {
     'static': StaticViewSitemap,
 }
 
+""" class StaticViewSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.8
 
+    def items(self):
+        # On sécurise en ne mettant que l'accueil pour le premier test
+        return ['cfma_base:home']
 
+    def location(self, item):
+        return reverse(item)
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
+ """
 
 
 urlpatterns = [
