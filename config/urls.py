@@ -83,7 +83,7 @@ sitemaps = {
 urlpatterns = [
     # On ajoute les deux versions pour être 100% sûr que Django intercepte la demande
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('sitemap.xml/', sitemap, {'sitemaps': sitemaps}), 
+    #path('sitemap.xml/', sitemap, {'sitemaps': sitemaps}), 
     
     path('admin/', admin.site.urls),
     #path('', include('cfma_base'))

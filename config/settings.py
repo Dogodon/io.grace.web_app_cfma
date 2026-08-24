@@ -531,6 +531,8 @@ LOGOUT_REDIRECT_URL = '/'  # Ou le nom de votre route d'accueil, par exemple 'ho
 
 SITE_ID = 1
 
+# À ajouter dans votre settings.py
+#APPEND_SLASH = False
 
 # raise InconsistentMigrationHistory(
 #     ...
