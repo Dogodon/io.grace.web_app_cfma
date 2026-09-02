@@ -145,3 +145,308 @@
                 
                 
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<style>
+    /* =========================================================================
+        📦 DESIGN DU CARROUSEL BOOTSTRAP (CORRECTION AFFICHAGE)
+    ========================================================================== */
+    
+    /* 🖼️ Ajustement de l'image de fond pour qu'elle ne soit pas déformée */
+    #carouselFormations .carousel-item img {
+        object-fit: cover;
+        filter: brightness(40%); /* Assombrit le fond pour lire les textes blancs */
+        transition: transform 0.6s ease-in-out, filter 0.4s ease-in-out;
+    }
+
+    /* 🏎️ Effet haut de gamme de zoom et d'éclaircissement au survol */
+    #carouselFormations:hover .carousel-item.active img {
+        transform: scale(1.03);
+        filter: brightness(55%);
+    }
+
+    /* 📝 Centrage et espacement des textes */
+    #carouselFormations .carousel-caption {
+        z-index: 5;
+        max-width: 800px;
+        padding-bottom: 4rem;
+    }
+
+    /* 🎛️ Personnalisation des boutons flèches (Style Orange CFMA) */
+    #carouselFormations .carousel-control-prev,
+    #carouselFormations .carousel-control-next {
+        width: 8%;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+    }
+
+    #carouselFormations .carousel-control-prev:hover,
+    #carouselFormations .carousel-control-next:hover {
+        opacity: 1;
+    }
+
+    /* Rond de fond pour les flèches pour une meilleure visibilité */
+    #carouselFormations .carousel-control-prev-icon,
+    #carouselFormations .carousel-control-next-icon {
+        background-color: rgba(236, 111, 69, 0.85); /* Orange CFMA */
+        padding: 1.5rem;
+        border-radius: 50%;
+        background-size: 55%;
+    }
+
+    /* ⚫ Personnalisation des indicateurs du bas (Points) */
+    #carouselFormations .carousel-indicators [data-bs-target] {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        border: 2px solid transparent;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #carouselFormations .carousel-indicators .active {
+        background-color: #ec6f45 !important; /* Orange CFMA actif */
+        transform: scale(1.2);
+    }
+
+    /* =========================================================================
+        📱 RESPONSIVE DESIGN (TÉLÉPHONES ET TABLETTES)
+    ========================================================================== */
+    @media (max-width: 768px) {
+        #carouselFormations {
+            height: 420px !important; /* Hauteur plus adaptée aux smartphones */
+        }
+        #carouselFormations .carousel-caption {
+            width: 90% !important;
+            padding-bottom: 2.5rem !important;
+        }
+        #carouselFormations .carousel-caption h2 {
+            font-size: 1.4rem !important;
+        }
+        #carouselFormations .carousel-control-prev-icon,
+        #carouselFormations .carousel-control-next-icon {
+            padding: 1.1rem; /* Flèches légèrement plus petites sur mobile */
+        }
+    }
+</style>
+
+
+
+
+<!-- =========================================================================
+    1. SECTION BANNER HERO (THÉMATIQUE LITERA)
+========================================================================== -->
+<div class="p-5 mb-5 bg-light rounded-3 border shadow-sm">
+    <div class="container-fluid py-3 text-center">
+        <span class="badge bg-success rounded-pill px-3 py-2 mb-3 fw-bold text-uppercase tracking-wider">Inscriptions Ouvertes - Rentrée 2026</span>
+        <h1 class="display-4 fw-bold text-primary mb-3">Propulsez votre Carrière Automobile</h1>
+        <p class="col-md-8 mx-auto fs-5 text-muted">
+            Découvrez nos parcours d'excellence combinant cours théoriques en salle et pratique intensive en conditions réelles au sein de notre atelier de diagnostic de pointe.
+        </p>
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="#catalogue" class="btn btn-primary btn-lg rounded-pill px-4 fw-bold">Consulter le catalogue</a>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================================
+    2. CARROUSEL INTERACTIF DES PÔLES MÉTIERS (NATIVE BOOTSTRAP 5)
+========================================================================== -->
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-12">
+        <h3 class="fw-bold text-dark text-center mb-4">
+            <i class="fa-solid fa-images me-2 text-primary"></i>Immersion au cœur de nos Ateliers
+        </h3>
+        
+        <!-- 🔄 data-bs-ride="carousel" lance le défilement automatique sans JS -->
+        <div id="carouselFormations" class="carousel slide shadow border rounded-3 overflow-hidden" data-bs-ride="carousel" data-bs-interval="5000" style="height: 500px;">
+            
+            <!-- Points de navigation du bas -->
+            <div class="carousel-indicators" style="z-index: 15;">
+                {% for formation in formations %}
+                <button type="button" data-bs-target="#carouselFormations" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}"></button>
+                {% endfor %}
+            </div>
+
+            <div class="carousel-inner h-100">
+                {% for formation in formations %}
+                <div class="carousel-item h-100 {% if forloop.first %}active{% endif %}">
+                    
+                    <!-- 🖼️ Image de fond adaptative (Full Space Cover) -->
+                    {% if formation.image %}
+                        <img src="{{ formation.image.url }}" alt="{{ formation.titre }}" class="w-100 h-100 object-fit-cover">
+                        <!-- Voile noir dégradé pour garantir la lisibilité du texte blanc -->
+                        <div class="w-100 h-100 position-absolute start-0 top-0" style="background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.4)); z-index: 2;"></div>
+                    {% else %}
+                        <!-- Fond dégradé de secours moderne si pas d'image -->
+                        <div class="w-100 h-100 d-flex position-absolute start-0 top-0" style="background: linear-gradient(135deg, #1f2327, #ec6f45); z-index: 1;"></div>
+                    {% endif %}
+
+                    <!-- 📝 Contenu centré proprement au milieu du voile -->
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center h-100 position-absolute start-50 top-50 translate-middle w-75 text-center" style="z-index: 5; max-width: 800px; padding-bottom: 3.5rem;">
+                        <i class="fa-solid fa-graduation-cap fa-3x mb-3" style="color: #ec6f45;"></i>
+                        <span class="badge bg-light text-primary rounded-pill mb-2 px-3 py-2 fw-bold text-uppercase fs-7">{{ formation.badge_niveau }}</span>
+                        <h2 class="fw-bold text-white text-uppercase tracking-wide mb-2 fs-3 fs-md-1">{{ formation.titre }}</h2>
+                        <p class="text-light-subtle d-none d-md-block mb-4 opacity-90 fs-5">{{ formation.description_generale|truncatewords:15 }}</p>
+                        
+                        <div class="d-flex gap-2 justify-content-center flex-wrap">
+                            <span class="badge px-3 py-2 rounded-pill fw-bold bg-white text-dark shadow-sm border">
+                                <i class="fa-solid fa-clock text-primary me-2"></i>{{ formation.duree }}
+                            </span>
+                            <a href="#catalogue" class="btn btn-primary px-4 py-2 rounded-pill fw-bold shadow-sm transition">
+                                <i class="fa-solid fa-circle-info me-2"></i>En savoir plus
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <!-- Écran de secours si le catalogue Django est vide -->
+                <div class="carousel-item active h-100" style="background: linear-gradient(135deg, #1f2327, #0b0c10);">
+                    <div class="carousel-caption d-flex flex-column justify-content-center align-items-center h-100 position-absolute start-50 top-50 translate-middle text-center w-75">
+                        <i class="fa-solid fa-triangle-exclamation text-warning fa-3x mb-3"></i>
+                        <h4 class="text-white text-uppercase">Aucune formation disponible</h4>
+                        <p class="text-muted">Nos équipes mettent actuellement à jour le catalogue technique de l'académie.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Fleches de contrôle de navigation (Gauche / Droite) -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselFormations" data-bs-slide="prev" style="z-index: 10;">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Précédent</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselFormations" data-bs-slide="next" style="z-index: 10;">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Suivant</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<!-- =========================================================================
+    3. CATALOGUE DE NOS DIPLÔMES ET CERTIFICATIONS
+========================================================================== -->
+<div id="catalogue" class="mt-5 pt-3">
+    <h3 class="fw-bold text-dark border-bottom pb-2 mb-4">
+        <i class="fa-solid fa-graduation-cap me-2 text-primary"></i>Nos Cursus Accompagnements & Certifications
+    </h3>
+
+    <div class="row">
+        <!-- Cursus 1 : CAP Maintenance -->
+        <div class="col-md-4 mb-4">
+            <div class="card border-light shadow-sm h-100 transition-all">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-info text-white font-monospace uppercase px-2 py-1">Accompagnement personnalisé</span>
+                        <span class="badge bg-light text-dark border fw-normal">Durée : 2ans </span>
+                    </div>
+                    <h4 class="card-title fw-bold text-primary mb-2">Chauffeurs et Propriétaires de véhicules</h4>
+                    <p class="card-text text-muted small">
+                        Un programme complet de 2 ans spécialement conçu pour les chauffeurs professionnels et les propriétaires soucieux de maximiser la longévité de leur investissement. Cette formation unique enseigne l'art de l'éco-conduite, la détection précoce des anomalies mécaniques et la maintenance préventive. Apprenez à réduire drastiquement vos coûts de carburant et de réparation, à réagir correctement en cas de panne sur la route et à superviser efficacement l'entretien général de votre outil de travail au quotidien. 🚗 📈
+                    </p>
+                    <ul class="list-unstyled small my-3 text-dark">
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Maintenance préventive quotidienne</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Diagnostic des bruits et alertes moteur</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Techniques d'éco-conduite</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Gestion des fluides et consommables</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Sécurité routière et interventions d'urgence</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Optimisation de la durée de vie du véhicule</li>
+                        
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-top-0 pb-3">
+                    <div class="d-grid">
+                        <a href="{% url 'prendre_rdv_diagnostic' %}" class="btn btn-outline-primary btn-sm rounded-pill fw-bold">Prendre un rendez-vous</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cursus 2 : Destiné au chauffeur -->
+        <div class="col-md-4 mb-4">
+            <div class="card border-primary shadow-sm h-100 position-relative">
+                <div class="position-absolute top-0 end-0 bg-primary text-white px-3 py-1 rounded-bl small fw-bold" style="border-radius: 0 0.3rem 0 0.3rem;">Le plus demandé</div>
+                <div class="card-body mt-2">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-warning text-dark font-monospace uppercase px-2 py-1">Qualification Pro</span>
+                        <span class="badge bg-light text-dark border fw-normal">Durée : 2 ans</span>
+                    </div>
+                    <h4 class="card-title fw-bold text-primary mb-2">Etudiants en perfectionnement</h4>
+                    <p class="card-text text-muted small">
+                       Ce cursus d'excellence de 2 ans est conçu pour les étudiants souhaitant aller au-delà des bases de la mécanique et maîtriser les technologies de pointe de l'automobile moderne. Alliant théorie rigoureuse et immersion pratique intensive au sein de l'atelier SFMA, cette formation prépare les futurs experts techniques de haut niveau. Les apprenants travailleront sur des cas de pannes réels, l'utilisation de valises de diagnostic électronique de dernière génération, et la prise en charge des nouvelles motorisations. 🚀 🔧
+                    </p>
+                    <ul class="list-unstyled small my-3 text-dark">
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Diagnostic électronique approfondi</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Recherche de pannes électriques complexes</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Maintenance des moteurs thermiques et hybrides</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Gestion technique d'un atelier</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Utilisation des outils de mesure de précision</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Réparation des systèmes de sécurité embarqués</li>
+                        
+                    </ul>
+                </div>
+                                <div class="card-footer bg-transparent border-top-0 pb-3">
+                    <div class="d-grid">
+                        <a href="{% url 'prendre_rdv_diagnostic' %}" class="btn btn-outline-primary btn-sm rounded-pill fw-bold">Prendre un rendez-vous</a>
+                    </div>
+                </div>
+     </div>
+        </div>
+
+
+
+                <!-- Cursus 3 : Les femmes à la mécanique -->
+        <div class="col-md-4 mb-4">
+            <div class="card border-primary shadow-sm h-100 position-relative">
+                <div class="position-absolute top-0 end-0 bg-primary text-white px-3 py-1 rounded-bl small fw-bold" style="border-radius: 0 0.3rem 0 0.3rem;">Le plus demandé</div>
+                <div class="card-body mt-2">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-warning text-dark font-monospace uppercase px-2 py-1">Qualification FM</span>
+                        <span class="badge bg-light text-dark border fw-normal">Durée : 2 mois</span>
+                    </div>
+                    <h4 class="card-title fw-bold text-primary mb-2">Les femmes à la Mécatroniquen</h4>
+                    <p class="card-text text-muted small">
+                        Une formation intensive inédite et 100% pratique, spécialement conçue pour ouvrir les portes de la mécatronique automobile aux femmes ! Que vous soyez en reconversion professionnelle, étudiante ou simplement passionnée, ce cursus de 2 mois vous donne toutes les clés pour comprendre, diagnostiquer et réparer l'électronique et la mécanique des véhicules modernes. L'apprentissage se fait directement au cœur de notre atelier SFMA dans une ambiance bienveillante et stimulante. 🚀 ✨
+                    </p>
+                    <ul class="list-unstyled small my-3 text-dark">
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Diagnostic électronique sur valise informatique</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Lecture des schémas électriques</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Maintenance mécanique de base</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Contrôle des capteurs et actionneurs</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Analyse des voyants du tableau de bord</li>
+                        <li><i class="fa-solid fa-check text-success me-2"></i>Entretien des systèmes embarqués</li>
+                    </ul>
+                </div>
+                                <div class="card-footer bg-transparent border-top-0 pb-3">
+                    <div class="d-grid">
+                        <a href="{% url 'prendre_rdv_diagnostic' %}" class="btn btn-outline-primary btn-sm rounded-pill fw-bold">Prendre un rendez-vous</a>
+                    </div>
+                </div>
+     </div>
+        </div>
+
+
+        
+{% endblock %}
+
+

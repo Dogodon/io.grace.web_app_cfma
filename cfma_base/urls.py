@@ -23,6 +23,10 @@ from django.shortcuts import reverse
 app_name = 'cfma_base'
 
 
+from django.urls import path
+from .views import reveil_cron
+
+
 
 
 
@@ -30,6 +34,7 @@ urlpatterns = [
     # Page d'accueil de l'application
 
     path('', views.home, name='home'), 
+    path('ping-cron/', reveil_cron, name='reveil_cron'),
     
 
     #path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),

@@ -1,22 +1,124 @@
-{% load static %} 
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CENTRE DE FORMATION AUX METIERS DE L'AUTOMOBILE</title>
-    <!-- Thème Bootstrap Litera -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <!-- Icones FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- 🟧 SURCHARGE ORANGE DE BOOTSTRAP LITERA -->
+    <title>CENTRE DE FORMATION AUX METIERS DE L'AUTOMOBILE</title>
+
+    <!-- Bootstrap Litera Local -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+
     <style>
         :root, [data-bs-theme=light] {
             --bs-primary: #ec6f45; 
             --bs-primary-rgb: 236, 111, 69;
             --bs-link-color: #ec6f45;
             --bs-link-color-rgb: 236, 111, 69;
+            --bs-link-hover-color: #be532e;
+            --bs-link-hover-color-rgb: 190, 83, 46;
+            --bs-primary-text-emphasis: #5e2614;
+            --bs-primary-bg-subtle: #fbeadd;
+            --bs-primary-border-subtle: #f7ceb5;
+        }
+        .bg-primary { background-color: var(--bs-primary) !important; }
+        .text-primary { color: var(--bs-primary) !important; }
+        
+        /* 🎛️ BARRE DE CONTACT ULTRA COMPACTE */
+        .top-contact-bar {
+            background-color: #c8c4bf;
+            font-size: 0.8rem;
+            padding: 4px 0;
+        }
+        .contact-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .contact-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .contact-label {
+            font-weight: 700;
+            color: #555;
+            letter-spacing: 0.5px;
+        }
+        .btn-phone {
+            color: #fff !important;
+            font-weight: 500;
+        }
+        .btn-phone:hover { color: #ec6f45 !important; }
+        .social-icons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .social-icons a {
+            color: #fff !important;
+            transition: transform 0.2s, color 0.2s;
+        }
+        .social-icons a:hover { transform: scale(1.15); }
+        .btn-whatsapp:hover { color: #25D366 !important; }
+        .btn-facebook:hover { color: #1877F2 !important; }
+        .btn-tiktok:hover { color: #010101 !important; }
+
+        /* 🏎️ NAV BAR SANS BURGER HORIZONTALE DÉFILANTE */
+        .mobile-scroll-menu {
+            display: flex;
+            align-items: center;
+        }
+        @media (max-width: 767px) {
+            .mobile-scroll-menu {
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding: 2px 0;
+            }
+            .mobile-scroll-menu::-webkit-scrollbar { display: none; }
+            .nav-link-compact {
+                font-size: 0.82rem !important;
+                padding: 2px 4px !important; 
+                display: inline-block;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.85) !important;
+            }
+            .nav-link-compact.active {
+                color: #fff !important;
+                border-bottom: 2px solid #fff;
+            }
+        }
+        @media (min-width: 768px) {
+            .mobile-scroll-menu { justify-content: flex-end; }
+            .nav-link-compact { padding: 0.4rem 0.8rem !important; }
+        }
+    </style>
+    <style>
+
+        /* =========================================================
+           COULEURS PRINCIPALES
+        ========================================================= */
+
+        :root,
+        [data-bs-theme=light] {
+            --bs-primary: #ec6f45;
+            --bs-primary-rgb: 236, 111, 69;
+
+            --bs-link-color: #ec6f45;
+            --bs-link-color-rgb: 236, 111, 69;
+
             --bs-link-hover-color: #be532e;
             --bs-link-hover-color-rgb: 190, 83, 46;
 
@@ -26,8 +128,14 @@
             --bs-focus-ring-color: rgba(236, 111, 69, 0.25);
         }
 
-        .bg-primary { background-color: var(--bs-primary) !important; }
-        .text-primary { color: var(--bs-primary) !important; }
+        .bg-primary {
+            background-color: var(--bs-primary) !important;
+        }
+
+        .text-primary {
+            color: var(--bs-primary) !important;
+        }
+
         .btn-primary {
             --bs-btn-bg: var(--bs-primary);
             --bs-btn-border-color: var(--bs-primary);
@@ -37,97 +145,448 @@
             --bs-btn-disabled-bg: var(--bs-primary);
         }
 
-        /* 🎯 Styles pour la barre des contacts et réseaux sociaux */
-        .top-contact-bar {
-            background-color: #c8c4bf;
-            font-size: 0.85rem;
+
+        /* =========================================================
+           NAVIGATION PRINCIPALE
+        ========================================================= */
+
+        .main-navbar {
+            background: var(--bs-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            padding: 7px 0;
         }
-        .top-contact-bar a {
-            transition: color 0.2s ease;
+
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            min-width: 0;
         }
-        .top-contact-bar .social-icons a:hover {
-            transform: scale(1.15);
+
+        /* Logo */
+
+        .navbar-brand {
+            margin: 0;
+            padding: 0;
+            flex-shrink: 0;
         }
-        .top-contact-bar .btn-whatsapp:hover { color: #25D366 !important; }
-        .top-contact-bar .btn-facebook:hover { color: #1877F2 !important; }
-        .top-contact-bar .btn-tiktok:hover { color: #010101 !important; background-color: #fff; border-radius: 4px; }
-        .top-contact-bar .btn-phone:hover { color: #ec6f45 !important; }
+
+        .navbar-brand img {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+        }
+
+        /* Menu */
+
+        .mobile-scroll-menu {
+            flex: 1;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            margin-left: 12px;
+
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-scroll-menu::-webkit-scrollbar {
+            display: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 4px;
+            width: max-content;
+        }
+
+        .nav-link-compact {
+            color: rgba(255, 255, 255, 0.90) !important;
+            font-size: 0.90rem;
+            font-weight: 600;
+
+            padding: 6px 10px !important;
+            border-radius: 5px;
+
+            white-space: nowrap;
+
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .nav-link-compact:hover {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .nav-link-compact.active {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+/* =========================================================
+   BARRE CONTACT & RÉSEAUX SOCIAUX
+========================================================= */
+
+.top-contact-bar {
+    background-color: #c8c4bf;
+    color: #fff;
+    font-size: 0.82rem;
+    padding: 6px 0;
+    margin-bottom: 0 !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.contact-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Contacts */
+
+.contact-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+.contact-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.75);
+    white-space: nowrap;
+}
+
+.btn-phone {
+    color: #fff !important;
+    white-space: nowrap;
+    font-size: 0.82rem;
+
+    transition: color 0.2s ease;
+}
+
+.btn-phone:hover {
+    color: #ec6f45 !important;
+}
+
+/* Réseaux sociaux */
+
+.social-icons {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.social-icons a {
+    width: 28px;
+    height: 28px;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 !important;
+    border-radius: 5px;
+
+    flex-shrink: 0;
+
+    transition:
+        transform 0.2s ease,
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.social-icons a:hover {
+    transform: translateY(-2px);
+}
+
+.btn-whatsapp:hover {
+    color: #25D366 !important;
+    background-color: rgba(255,255,255,0.15);
+}
+
+.btn-facebook:hover {
+    color: #1877F2 !important;
+    background-color: rgba(255,255,255,0.15);
+}
+
+.btn-tiktok:hover {
+    color: #010101 !important;
+    background-color: #fff;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .top-contact-bar {
+        padding: 5px 0;
+    }
+
+    .contact-inner {
+        gap: 5px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .contact-info {
+        gap: 5px;
+    }
+
+    .contact-label {
+        display: none !important;
+    }
+
+    .btn-phone {
+        font-size: 0.68rem;
+    }
+
+    .btn-phone i {
+        font-size: 0.65rem;
+        margin-right: 2px !important;
+    }
+
+    .social-icons {
+        gap: 1px;
+    }
+
+    .social-icons a {
+        width: 25px;
+        height: 25px;
+    }
+
+    .social-icons i {
+        font-size: 0.88rem;
+    }
+}
+
+
+/* =========================================================
+   TRÈS PETITS TÉLÉPHONES
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .contact-inner {
+        gap: 3px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .contact-info {
+        gap: 3px;
+    }
+
+    .btn-phone {
+        font-size: 0.61rem;
+    }
+
+    .btn-phone i {
+        font-size: 0.58rem;
+        margin-right: 1px !important;
+    }
+
+    .social-icons {
+        gap: 0;
+    }
+
+    .social-icons a {
+        width: 23px;
+        height: 23px;
+    }
+
+    .social-icons i {
+        font-size: 0.78rem;
+    }
+}
+
+
+
+
     </style>
 </head>
+
+
 <body>
 
-    <!-- 1. Barre de navigation commune Horizontale Style Litera (Marge mb-0 pour coller la sous-barre) -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-0">
-        <div class="container">
-            <img src="{% static 'images/logo_cfma0.png' %}" alt="Logo CFMA" width="36" height="36" class="d-inline-block align-top">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<!-- =============================================================
+     1. NAVIGATION PRINCIPALE
+============================================================= -->
+    <!-- 1. Barre de navigation commune Horizontale Universelle (Toujours affichée sur une seule ligne) -->
+    <nav class="navbar navbar-dark bg-primary shadow-sm mb-0 py-2">
+        <!-- 🎯 CORRECTION : Utilisation de flex-row et flex-nowrap pour bloquer l'alignement sur une seule ligne -->
+        <div class="container d-flex flex-row flex-nowrap align-items-center justify-content-between gap-3 overflow-hidden">
             
-            <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav me-auto">
-                        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Accueil</a></li>
-                                                <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_services' %}">Services</a></li>
+            <a class="navbar-brand d-flex align-items-center gap-2 m-0 flex-shrink-0" href="{% url 'home' %}">
+                <img src="{% static 'images/logo_cfma0.png' %}" alt="Logo CFMA" width="32" height="32" class="d-inline-block align-top">
+            </a>
 
-                        <li class="nav-item"><a class="nav-link" href="{% url 'catalogue_formations' %}">Formations</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
-
+            <!-- 🎯 Liens directement listés côte à côte à la suite du logo -->
+            <div class="mobile-scroll-menu flex-grow-1">
+                <ul class="navbar-nav d-flex flex-row gap-2 gap-md-3 m-0 p-0">
+                    <li class="nav-item"><a class="nav-link nav-link-compact active" href="{% url 'home' %}">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-compact" href="{% url 'catalogue_actualites' %}">Actualités</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-compact" href="{% url 'catalogue_services' %}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-compact" href="{% url 'catalogue_formations' %}">Formations</a></li>
+                    <li class="nav-item"><a class="nav-link nav-link-compact" href="{% url 'cfma_base:a_propos' %}">À Propos</a></li>
                 </ul>
             </div>
+            
         </div>
     </nav>
-    <!-- =========================================================================
-        🎯 2. BARRE DE CONTACT & RÉSEAUX SOCIAUX PLACÉE EN DESSOUS (Marge mb-4 respectée)
-    ========================================================================== -->
-    <div class="top-contact-bar text-white py-2 shadow-sm mb-4">
-        <div class="container d-flex flex-wrap justify-content-between align-items-center">
-            <!-- Liens d'appels directs pour le secrétariat -->
-            <div class="d-flex flex-wrap gap-3 align-items-center">
-                <span class="fw-bold text-uppercase tracking-wider small text-muted d-none d-sm-inline">Secrétariat :</span>
-                <a href="tel:+2250546845088" class="text-white text-decoration-none btn-phone small">
-                    <i class="fa-solid fa-phone text-primary me-1"></i>+225 05 46 84 50 88
-                </a>
-                <a href="tel:+2250709103654" class="text-white text-decoration-none btn-phone small">
-                    <i class="fa-solid fa-phone text-primary me-1"></i>+225 07 09 10 36 54
-                </a>
-            </div>
-            <div class="d-flex align-items-center gap-3 social-icons mt-1 mt-sm-0">
-                <a href="https://wa.me" target="_blank" class="text-white text-decoration-none btn-whatsapp px-1" title="Discuter sur WhatsApp">
-                    <i class="fa-brands fa-whatsapp fa-lg"></i>
-                </a>
-                <a href="https://www.facebook.com/Centre.cfma/" target="_blank" class="text-white text-decoration-none btn-facebook px-1" title="Nous suivre sur Facebook">
-                    <i class="fa-brands fa-facebook fa-lg"></i>
-                </a>
-                <a href="https://www.tiktok.com/@cfma.garage.autom?_r=1&_t=ZS-990hb7xeFlY" target="_blank" class="text-white text-decoration-none btn-tiktok px-1" title="Regarder nos vidéos TikTok">
-                    <i class="fa-brands fa-tiktok fa-lg"></i>
-                </a>
-            </div>
+
+
+
+<!-- =============================================================
+     2. CONTACT & RÉSEAUX SOCIAUX
+============================================================= -->
+
+<div class="top-contact-bar">
+
+    <div class="container contact-inner">
+
+
+        <!-- CONTACTS -->
+
+        <div class="contact-info">
+
+            <span class="contact-label d-none d-sm-inline">
+                SECRÉTARIAT
+            </span>
+
+
+            <a href="tel:+2250546845088"
+               class="text-decoration-none btn-phone">
+
+                <i class="fa-solid fa-phone text-primary me-1"></i>
+                +225 05 46 84 50 88
+
+            </a>
+
+
+            <a href="tel:+2250709103654"
+               class="text-decoration-none btn-phone">
+
+                <i class="fa-solid fa-phone text-primary me-1"></i>
+                +225 07 09 10 36 54
+
+            </a>
+
         </div>
+
+
+
+        <!-- RÉSEAUX SOCIAUX -->
+
+        <div class="social-icons">
+
+
+            <!-- WHATSAPP -->
+
+            <a href="https://wa.me/21654054659?text=Bonjour%20l%27equipe%20CFMA%2C%20je%20viens%20de%20votre%20site%20web%20et%20vous%20%C3%A9cris%20pour%20en%20savoir%20davantage."
+               target="_blank"
+               rel="noopener noreferrer"
+               class="text-white text-decoration-none btn-whatsapp"
+               title="Discuter sur WhatsApp"
+               aria-label="WhatsApp">
+
+                <i class="fa-brands fa-whatsapp"></i>
+
+            </a>
+
+
+            <!-- FACEBOOK -->
+
+            <a href="https://www.facebook.com/Centre.cfma/"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="text-white text-decoration-none btn-facebook"
+               title="Nous suivre sur Facebook"
+               aria-label="Facebook">
+
+                <i class="fa-brands fa-facebook"></i>
+
+            </a>
+
+
+            <!-- TIKTOK -->
+
+            <a href="https://www.tiktok.com/@cfma.garage.autom"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="text-white text-decoration-none btn-tiktok"
+               title="Regarder nos vidéos TikTok"
+               aria-label="TikTok">
+
+                <i class="fa-brands fa-tiktok"></i>
+
+            </a>
+
+        </div>
+
     </div>
-    <main class="py-4">
-        <div class="container">
-            <!-- ⚠️ UNIFICATION DES BLOCS POUR ÉVITER TOUT SYNTAX ERROR FUTURE -->
-            {% block dashboard_content %}{% endblock dashboard_content %}
-            {% block content %}{% endblock content %}
-        </div>
-    </main>
 
-    <!-- Pied de page Litera -->
-    <footer class="bg-light text-center py-4 mt-5 border-top">
-        <div class="container">
-            <p class="mb-0 text-muted small">&copy; 2026 CENTRE DE FORMATION AUX METIERS DE L'AUTOMOBILE - Centre de Diagnostic et de Formation Automobile.</p>
-        </div>
-    </footer>
+</div>
 
-    <!-- Scripts officiels indispensables pour faire fonctionner les Dropdowns Litera -->
-    <script src="https://jsdelivr.net"></script>
-    <!-- 🎯 CORRECTION : Chargement via CDN officiel Bootstrap -->
-    <script src="https://jsdelivr.net" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-    <!-- Script indispensable pour faire tourner le carrousel Bootstrap 5 -->
-    <script src="https://jsdelivr.net"></script>
+
+<!-- =============================================================
+     3. CONTENU PRINCIPAL
+============================================================= -->
+
+<main class="py-4">
+
+    <div class="container">
+
+        {% block dashboard_content %}
+        {% endblock dashboard_content %}
+
+
+        {% block content %}
+        {% endblock content %}
+
+    </div>
+
+</main>
+
+
+
+<!-- =============================================================
+     4. FOOTER
+============================================================= -->
+
+<footer class="bg-light text-center py-4 mt-5">
+
+    <div class="container">
+
+        <p class="mb-0 text-muted small">
+
+            &copy; 2026 CENTRE DE FORMATION AUX METIERS DE L'AUTOMOBILE
+            -
+            Centre de Diagnostic et de Formation Automobile.
+
+        </p>
+
+    </div>
+
+</footer>
+
 
 </body>
 </html>

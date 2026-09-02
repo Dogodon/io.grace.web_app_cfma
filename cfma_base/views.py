@@ -46,6 +46,13 @@ from cfma_base import views
 
 
 
+
+from django.shortcuts import render
+from .models import GalerieCFMA, PartenaireContact  # 🌟 Correction du nom du modèle ici
+
+from django.http import HttpResponse
+
+
 def home(request):
     # Récupération brute des données des deux pôles
     liste_com_clients = GalerieCommentaireClient.objects.all()
@@ -80,8 +87,10 @@ def galeries_commentaires_clients(request):
 
 
 
-from django.shortcuts import render
-from .models import GalerieCFMA, PartenaireContact  # 🌟 Correction du nom du modèle ici
+def reveil_cron(request):
+    # Renvoie un texte brut ultra-léger pour valider la requête GET
+    return HttpResponse("OK", content_type="text/plain")
+
 
 def a_propos(request):
     # 🎯 On copie la logique qui marche : on récupère TOUTE la liste des configurations
