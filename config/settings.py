@@ -10,249 +10,62 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
-
-# config/settings.py (Tout en haut du fichier)
 import os
+import re
 from pathlib import Path
 
-# 🎯 IMPORTATION SÉCURISÉE DE CONFIG (DECOUPLE)
+# ==============================================================================
+# 1. IMPORTATION SÉCURISÉE DE CONFIG (DECOUPLE) & CHEMINS
+# ==============================================================================
 try:
     from decouple import config
 except ImportError:
-    # Option de secours si decouple n'est pas utilisé ou mal installé
     def config(key, default=None):
         return os.environ.get(key, default)
 
-
-#from pathlib import Path
-#from decouple import config
-import dj_database_url
-
-
-import cloudinary
-import cloudinary.uploader
-from cloudinary.utils import cloudinary_url
-
-
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ==============================================================================
+# 2. PARAMÈTRES DE SÉCURITÉ ET CONFIGURATION DE BASE
+# ==============================================================================
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = True  # Mettre à False en production sur Render
+
+# Sécurisation des hôtes pour la production
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.render.com', '*']
 
 AUTH_USER_MODEL = 'cfma_base.User'
+ROOT_URLCONF = 'config.urls'
+WSGI_APPLICATION = 'config.wsgi.application'
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Application definition
-
+# ==============================================================================
+# 3. APPLICATIONS INSTALLÉES
+# ==============================================================================
 INSTALLED_APPS = [
-    "jazzmin",
-
+    "jazzmin",  # Doit être avant django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    
-    
     'django.contrib.sites',
     'django.contrib.sitemaps',   
     
-    'cloudinary_storage',
-
+    'cloudinary_storage',  # Stockage Cloudinary
     'django.contrib.staticfiles',
-
-
     'cloudinary',
     'cfma_base',
     'storages',
-
 ]
 
-# config/settings.py
+SITE_ID = 1
 
-
-# config/settings.py (Section Cloudinary)
-
-# config/settings.py (Tout en bas du fichier)
-
-# =========================================================================
-# 🖼️ CONFIGURATION DU STOCKAGE DES MÉDIAS (CLOUDINARY)
-# =========================================================================
-if 'RENDER' in os.environ:
-    # Production sur Render
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.environ.get("cloud_name_cloudinary"),
-        'API_KEY': os.environ.get("api_key_cloudinary"),
-        'API_SECRET': os.environ.get("api_secret_cloudinary"),
-    }
-else:
-    # Développement local sur votre Mac
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': config("cloud_name_cloudinary"),
-        'API_KEY': config("api_key_cloudinary"),
-        'API_SECRET': config("api_secret_cloudinary"),
-    }
-
-# Gestion moderne des stockages Django
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
-
-MEDIA_URL = '/media/'
-
-
-# =========================================================================
-# 📧 CONFIGURATION DU SERVEUR D'ENVOI D'EMAILS (SMTP GMAIL)
-# =========================================================================
-# config/settings.py (Tout en bas du fichier)
-
-# =========================================================================
-# 📧 CONFIGURATION UNIFIÉE DU SERVEUR D'ENVOI D'EMAILS (DJANGO 5.1+)
-# =========================================================================
-
-""" EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = '://gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-if 'RENDER' in os.environ:
-    # Récupération sécurisée des variables système en production
-    USER_GMAIL = os.environ.get('EMAIL_HOST_USER')
-    PASSWORD_GMAIL = os.environ.get('EMAIL_HOST_PASSWORD')
-else:
-    # Lecture locale via decouple
-    USER_GMAIL = config('EMAIL_HOST_USER')
-    PASSWORD_GMAIL = config('EMAIL_HOST_PASSWORD')
-
-# Utilisation du dictionnaire moderne MAILERS requis par votre version de Django
-MAILERS = {
-    "default": {
-        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
-        "HOST": "smtp.gmail.com",
-        "PORT": 587,
-        "USE_TLS": True,
-        "USER": USER_GMAIL,
-        "PASSWORD": PASSWORD_GMAIL,
-    }
-}
-
-# L'adresse d'expédition générale
-DEFAULT_FROM_EMAIL = USER_GMAIL """
-
-""" EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = '://gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-if 'RENDER' in os.environ:
-    # Production sur Render : Lecture directe des variables d'environnement
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-else:
-    # Développement local sur votre Mac : Lecture de votre fichier .env
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
- """
-
-
-
-
-""" # Détecte automatiquement l'environnement Render
-if 'RENDER' in os.environ:
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': os.environ.get("cloud_name_cloudinary"),
-        'API_KEY': os.environ.get("api_key_cloudinary"),
-        'API_SECRET': os.environ.get("api_secret_cloudinary"),
-    }
-else:
-    # Lecture locale via votre fichier .env sur votre Mac
-    CLOUDINARY_STORAGE = {
-        'CLOUD_NAME': config("cloud_name_cloudinary"),
-        'API_KEY': config("api_key_cloudinary"),
-        'API_SECRET': config("api_secret_cloudinary"),
-    }
- """
-""" DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
- """
-""" # config/settings.py (Tout en bas, remplacez DEFAULT_FILE_STORAGE par ceci)
-
-STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-} """
-
-""" # config/settings.py
-
-# 🎯 1. DICTIONNAIRE DE CONFIGURATION UNIQUE POUR DJANGO
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config("cloud_name_cloudinary"),
-    'API_KEY': config("api_key_cloudinary"),
-    'API_SECRET': config("api_secret_cloudinary"),
-}
-
-# 🎯 2. BRANCHEMENT DU STOCKAGE DES MÉDIAS (REMPLACE LE DISQUE DUR DE RENDER)
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
- """
-
-
-
-
-""" 
-# Configuration       
-cloudinary.config( 
-    cloud_name = config("cloud_name_cloudinary"), 
-    api_key = config("api_key_cloudinary"), 
-    api_secret = config("api_secret_cloudinary"), # Click 'View API Keys' above to copy your API secret
-    secure=True
-)
-
-# Upload an image
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-upload_result = cloudinary.uploader.upload("https://res.cloudinary.com/demo/image/upload/getting-started/shoes.jpg",
-                                           public_id="shoes")
-print(upload_result["secure_url"])
-
-# Optimize delivery by resizing and applying auto-format and auto-quality
-optimize_url, _ = cloudinary_url("shoes", fetch_format="auto", quality="auto")
-print(optimize_url)
-
-# Transform the image: auto-crop to square aspect_ratio
-auto_crop_url, _ = cloudinary_url("shoes", width=500, height=500, crop="auto", gravity="auto")
-print(auto_crop_url) """
-
-
-
+# ==============================================================================
+# 4. MIDDLEWARES (AVEC WHITENOISE POUR LES STATIQUES)
+# ==============================================================================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Doit être ici
-
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Gestion des fichiers CSS/JS en production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -261,26 +74,118 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
+# ==============================================================================
+# 5. CONFIGURATION DE LA BASE DE DONNÉES (SUPABASE POSTGRES)
+# ==============================================================================
 
+# Si on est sur Render, on tente d'utiliser la variable DATABASE_URL
+if os.environ.get('RENDER'):
+    db_url_string = os.environ.get('DATABASE_URL')
+else:
+    # En local, on utilise directement la chaîne brute depuis decouple/env
+    db_url_string = config('DATABASE_URL', default="")
 
-# config/settings.py
+# Nettoyage si la chaîne contient un préfixe accidentel
+if db_url_string and db_url_string.startswith("DATABASE_URL="):
+    db_url_string = db_url_string.replace("DATABASE_URL=", "", 1)
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # <-- Vérifiez que cette ligne est bien présente
-        'APP_DIRS': True,
-        # ...
+try:
+    # Découpage chirurgical via Regex pour immuniser les caractères spéciaux du mot de passe
+    pattern = r"postgresql://([^:]+):(.*)@([^:/]+):(\d+)/(.+)"
+    match = re.match(pattern, db_url_string)
+    
+    if match:
+        DB_USER = match.group(1)
+        DB_PASSWORD = match.group(2)  # Conserve le mot de passe intact
+        DB_HOST = match.group(3)
+        DB_PORT = match.group(4)
+        DB_NAME = match.group(5)
+        
+        # SI LE DNS DE VOTRE MAC BUG ET PASSE EN UNKNOWN HOST
+        # On force l'IP directe uniquement si on est sur votre machine locale
+        if not os.environ.get('RENDER') and DB_HOST == 'db.jzismsfpvubnkzpoxvok.supabase.co':
+            DB_HOST = '3.8.214.206'
+            
+    else:
+        raise ValueError("Le format de DATABASE_URL est incorrect ou vide.")
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+            'CONN_MAX_AGE': 600,
+        }
+    }
+except Exception as e:
+    # Option de secours absolue pour ne pas bloquer votre terminal local si DATABASE_URL échoue
+    if not os.environ.get('RENDER'):
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'postgres',
+                'USER': 'postgres',
+                'PASSWORD': 'VEK?nSG@B6v%dd5',
+                'HOST': '3.8.214.206',  # IP Directe
+                'PORT': '5432',
+                'OPTIONS': {
+                    'sslmode': 'require',
+                },
+                'CONN_MAX_AGE': 600,
+            }
+        }
+    else:
+        raise ValueError(f"Erreur critique de configuration de la base sur Render : {e}")
+
+# ==============================================================================
+# 6. CONFIGURATION DE L'ENVIRONNEMENT EMAIL & REDIRECTIONS
+# ==============================================================================
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = '185.107.232.248'  # IP fixe du relais Brevo pour contourner le DNS
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 10
+
+if os.environ.get('RENDER'):
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+else:
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default="")
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default="")
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+LOGOUT_REDIRECT_URL = '/'
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.render.com', '*']
+
+# Déclaration UNIQUE de STORAGES (Fichiers médias sur Cloudinary, statiques gérés par Django/WhiteNoise)
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-]
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ==============================================================================
+# 7. TEMPLATES
+# ==============================================================================
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        #'DIRS': [],
         'DIRS': [BASE_DIR / 'templates'], 
-
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -292,65 +197,28 @@ TEMPLATES = [
     },
 ]
 
-
-
-# config/settings.py
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-
-
-WSGI_APPLICATION = 'config.wsgi.application'
-
-
-
-
-
-
-
-
-###jazzmin :
-
-# config/settings.py
-
+# ==============================================================================
+# 8. CONFIGURATION INTERFACE JAZZMIN (CHARTE ORANGE)
+# ==============================================================================
 JAZZMIN_SETTINGS = {
-    # Titre de la page et de l'onglet
     "site_title": "CFMA Garage Admin",
     "site_header": "CFMA Orange",
     "site_brand": "CFMA Garage",
-
-"custom_css": "css/custom_admin.css",
-
-    # 🎯 COULEURS DE LA CHARTE (Classes Bootstrap)
+    "custom_css": "css/custom_admin.css",
     "site_logo_classes": "img-circle",
     "welcome_sign": "Bienvenue sur l'interface de gestion CFMA",
     "copyright": "CFMA Orange Garage",
-    #"search_model": ["auth.User", "cfma_base.ProfilClient"],
     "search_model": ["cfma_base.User", "cfma_base.ProfilClient"],
-    
-    # Forme des éléments
-    
     "topmenu_links": [
-        # Modifiez cette ligne dans vos JAZZMIN_SETTINGS :
         {"name": "Accueil", "url": "admin:index", "permissions": ["cfma_base.view_user"]},
-
-        #{"name": "Accueil", "url": "admin:index", "permissions": ["auth.view_user"]},
         {"name": "Voir le Site", "url": "/", "new_window": True},
     ],
 }
-# 🎯 LE SECRET POUR LA CHARTE ORANGE (UI Tweaks)
+
 JAZZMIN_UI_TWEAKS = {
-    # Barre supérieure orange avec texte blanc (navbar-dark)
     "navbar": "navbar-orange navbar-dark",
-    
-    # Thème général de l'administration (Flatly ou Default)
     "theme": "default",
-    
-    # Style de la barre latérale (Sidebar) sombre pour faire ressortir l'orange
     "sidebar": "sidebar-dark-orange",
-    
-    # Couleur des boutons d'action principaux (Enregistrer, etc.) en orange
     "button_classes": {
         "primary": "btn-orange",
         "secondary": "btn-secondary",
@@ -361,259 +229,4 @@ JAZZMIN_UI_TWEAKS = {
     }
 }
 
-
-
-
-
-
-
-
-""" DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
-} """
-
-
-#DATABASES = {
-#    'default': dj_database_url.parse(
-#        config('DATABASE_URL')
-#    )
-#}
-
-
-
-import os
-import dj_database_url
-from pathlib import Path
-from dotenv import load_dotenv
-
-# 1. Charge le fichier .env (en local uniquement)
-load_dotenv()
-
-# 2. Configure la base de données
-DATABASES = {
-    'default': dj_database_url.config(
-        # Si DATABASE_URL n'est pas trouvée (ex: en local sans .env), 
-        # Django utilisera SQLite par défaut pour ne pas planter.
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600
-    )
-}
-
-
-import os
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.render.com']
-
-# Vérifie si on utilise le stockage Supabase S3 (défini dans le .env ou sur Render)
-if os.environ.get('SUPABASE_S3_ACCESS_KEY_ID'):
-    # Configuration AWS S3 générique (utilisée par le protocole Supabase)
-    AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_S3_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_S3_SECRET_ACCESS_KEY')
-    AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_BUCKET_NAME', 'cfma_ci-media')
-    AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_S3_ENDPOINT_URL')
-    AWS_S3_REGION_NAME = os.environ.get('SUPABASE_S3_REGION_NAME', 'eu-west-2')
-    
-    # Paramètres de sécurité et comportement
-    AWS_DEFAULT_ACL = None  # Recommandé pour éviter les conflits d'ACL
-    AWS_QUERYSTRING_AUTH = False  # Génère des URLs publiques et propres (sans jeton temporaire)
-    
-    # Liaison de Django Storages pour les fichiers médias (images téléversées par les utilisateurs)
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
-else:
-    # Configuration par défaut en local si Supabase S3 n'est pas configuré
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = BASE_DIR / 'media'
-
-# Configuration des fichiers statiques (CSS, JS, Images du thème)
-# Recommandation pour Render : Utiliser WhiteNoise pour les statiques, et Supabase pour les médias
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-
-
-#import os
-#import dj_database_url
-#from pathlib import Path
-#from dotenv import load_dotenv
-
-#load_dotenv() # Pour lire un fichier .env en local
-
-# Remplacez l'ancienne configuration DATABASES par celle-ci :
-#DATABASES = {
-#    'default': dj_database_url.config(
-        # URL de secours (votre SQLite local) si la variable n'est pas définie
-#        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-#        conn_max_age=600
-
-#    'default': dj_database_url.config(
-#        config('DATABASE_URL')
-#    )
-
-#}
-
-
-
-# Database
-# https://docs.djangoproject.com/en/6.1/ref/settings/#databases
-""" 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': config('DB_NAME'), #BASE_DIR / '',
-        'USER' : config('DB_USER'),
-        'PASSWORD' : config('DB_PASSWORD'), #'psupuser1*/',
-        'HOST' : config('DB_HOST'),
-        'PORT' : '5433',
-    }
-} """
-
-
-# Password validation
-# https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/6.1/topics/i18n/
-
-#LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'fr'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.1/howto/static-files/
-
-STATIC_URL = 'static/'
-
-# Ajoutez cette ligne pour lier votre dossier racine
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
-
-
-
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
-""" MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-} """
-
-
-
-# Emplacement sur le disque dur où les fichiers seront stockés
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Préfixe d'URL pour accéder à ces images dans le navigateur
-MEDIA_URL = '/media/'
-
-
-
-# =========================================================================
-# CONFIGURATIONS EMAILS ET AUTHENTIFICATION
-# =========================================================================
-""" MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
- """
-AUTH_USER_MODEL = 'cfma_base.User'
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
-
-LOGIN_REDIRECT_URL = 'redirection_portail'
-LOGOUT_REDIRECT_URL = 'login'
-LOGIN_URL = 'login'
-
-
-
-# config/settings.py
-
-# =========================================================================
-# 📧 CONFIGURATION DU SERVEUR D'ENVOI D'EMAILS (SMTP GMAIL)
-# =========================================================================
-""" EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = '://gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-# 🔐 IDENTIFIANTS LIÉS À LA SÉCURITÉ (À LIRE VIA CONFIG OU OS.ENVIRON)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Votre adresse email Gmail (ex: garage.cfma@gmail.com)
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Le mot de passe d'application à 16 caractères généré à l'étape 1
-
-# 📬 L'adresse par défaut qui émet et reçoit les emails dans votre code
-DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
-
- """
-
-
-
-
-# config/settings.py
-
-# =========================================================================
-# 📧 CONFIGURATION SMTP BREVO AVEC ROUTAGE IP DIRECT (ANTI-BLOCAGE RENDER)
-# =========================================================================
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-# 🎯 On utilise directement l'adresse IP fixe du relais Brevo pour contourner le DNS
-EMAIL_HOST = '185.107.232.248'  
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_TIMEOUT = 10
-
-if 'RENDER' in os.environ:
-    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-else:
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-
-
-LOGOUT_REDIRECT_URL = '/'  # Ou le nom de votre route d'accueil, par exemple 'home'
-
-
-
-
-SITE_ID = 1
-
-# À ajouter dans votre settings.py
-#APPEND_SLASH = False
-
-# raise InconsistentMigrationHistory(
-#     ...
-# )
-pass
-
-
+LOGOUT_REDIRECT_URL = '/'
