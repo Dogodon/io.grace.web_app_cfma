@@ -1,30 +1,32 @@
 import os
 import django
 
-# Initialisation de l'environnement Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
-from cfma_base.models import User  # Ajustez l'import selon l'emplacement exact de votre modèle User
+# Utilise le modèle utilisateur configuré dans Django
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 def run():
-    username = "secretaire-cfma-ci-s"
-    email = "secretaire@cfma.com"
-    password = "VOTRE_MOT_DE_PASSE_ICI"  # <--- METTEZ VOTRE VRAI MOT DE PASSE ICI
+    username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
+    email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@cfma.com')
+    password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
 
-    # Supprime l'ancien compte s'il existe et n'a pas les droits pour éviter les conflits
+    if not username or not password:
+        print("⚠️ Les variables d'environnement ADMIN_USERNAME ou ADMIN_PASSWORD sont manquantes.")
+        return
+
+    # Nettoyage de l'ancien compte pour éviter les conflits
     User.objects.filter(username=username).delete()
 
-    # Création du compte avec les droits d'administration totaux
-    user = User.objects.create_user(
+    # Création propre avec les pleins pouvoirs
+    user = User.objects.create_superuser(
         username=username,
         email=email,
         password=password
     )
-    user.is_staff = True
-    user.is_superuser = True
-    user.save()
-    print("=== LE COMPTE ADMIN A ÉTÉ FORCÉ AVEC SUCCÈS ===")
+    print(f"🎉 SUCCÈS : L'administrateur '{username}' a été créé avec les privilèges globaux.")
 
 if __name__ == '__main__':
     run()
