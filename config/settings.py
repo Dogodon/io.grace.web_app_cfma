@@ -79,6 +79,7 @@ INSTALLED_APPS = [
 
     'cloudinary',
     'cfma_base',
+    'storages',
 
 ]
 
@@ -250,6 +251,8 @@ print(auto_crop_url) """
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Doit être ici
+
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -372,11 +375,84 @@ JAZZMIN_UI_TWEAKS = {
 } """
 
 
+#DATABASES = {
+#    'default': dj_database_url.parse(
+#        config('DATABASE_URL')
+#    )
+#}
+
+
+
+import os
+import dj_database_url
+from pathlib import Path
+from dotenv import load_dotenv
+
+# 1. Charge le fichier .env (en local uniquement)
+load_dotenv()
+
+# 2. Configure la base de données
 DATABASES = {
-    'default': dj_database_url.parse(
-        config('DATABASE_URL')
+    'default': dj_database_url.config(
+        # Si DATABASE_URL n'est pas trouvée (ex: en local sans .env), 
+        # Django utilisera SQLite par défaut pour ne pas planter.
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600
     )
 }
+
+
+import os
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.render.com']
+
+# Vérifie si on utilise le stockage Supabase S3 (défini dans le .env ou sur Render)
+if os.environ.get('SUPABASE_S3_ACCESS_KEY_ID'):
+    # Configuration AWS S3 générique (utilisée par le protocole Supabase)
+    AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_S3_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_S3_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_BUCKET_NAME', 'cfma_ci-media')
+    AWS_S3_ENDPOINT_URL = os.environ.get('SUPABASE_S3_ENDPOINT_URL')
+    AWS_S3_REGION_NAME = os.environ.get('SUPABASE_S3_REGION_NAME', 'eu-west-2')
+    
+    # Paramètres de sécurité et comportement
+    AWS_DEFAULT_ACL = None  # Recommandé pour éviter les conflits d'ACL
+    AWS_QUERYSTRING_AUTH = False  # Génère des URLs publiques et propres (sans jeton temporaire)
+    
+    # Liaison de Django Storages pour les fichiers médias (images téléversées par les utilisateurs)
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+else:
+    # Configuration par défaut en local si Supabase S3 n'est pas configuré
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
+
+# Configuration des fichiers statiques (CSS, JS, Images du thème)
+# Recommandation pour Render : Utiliser WhiteNoise pour les statiques, et Supabase pour les médias
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+
+
+#import os
+#import dj_database_url
+#from pathlib import Path
+#from dotenv import load_dotenv
+
+#load_dotenv() # Pour lire un fichier .env en local
+
+# Remplacez l'ancienne configuration DATABASES par celle-ci :
+#DATABASES = {
+#    'default': dj_database_url.config(
+        # URL de secours (votre SQLite local) si la variable n'est pas définie
+#        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+#        conn_max_age=600
+
+#    'default': dj_database_url.config(
+#        config('DATABASE_URL')
+#    )
+
+#}
 
 
 
