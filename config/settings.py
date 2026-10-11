@@ -64,6 +64,62 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
+
+
+
+
+
+
+# =========================================================================
+# 🖼️ CONFIGURATION DU STOCKAGE DES MÉDIAS (CLOUDINARY)
+# =========================================================================
+if 'RENDER' in os.environ:
+    # Production sur Render
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': os.environ.get("cloud_name_cloudinary"),
+        'API_KEY': os.environ.get("api_key_cloudinary"),
+        'API_SECRET': os.environ.get("api_secret_cloudinary"),
+    }
+else:
+    # Développement local sur votre Mac
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': config("cloud_name_cloudinary"),
+        'API_KEY': config("api_key_cloudinary"),
+        'API_SECRET': config("api_secret_cloudinary"),
+    }
+
+# Gestion moderne des stockages Django
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+MEDIA_URL = '/media/'
+
+
+
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+ROOT_URLCONF = 'config.urls'
+
+
+
+
+
+
 # ==============================================================================
 # 4. MIDDLEWARES (AVEC WHITENOISE POUR LES STATIQUES)
 # ==============================================================================
