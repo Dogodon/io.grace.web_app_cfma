@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 import os
 import re
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()  # Cela charge le fichier .env automatiquement au démarrage de Django
+
+
 
 # ==============================================================================
 # 1. IMPORTATION SÉCURISÉE DE CONFIG (DECOUPLE) & CHEMINS
@@ -74,74 +78,62 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ==============================================================================
-# 5. CONFIGURATION DE LA BASE DE DONNÉES (SUPABASE POSTGRES)
-# ==============================================================================
 
-# Si on est sur Render, on tente d'utiliser la variable DATABASE_URL
-if os.environ.get('RENDER'):
-    db_url_string = os.environ.get('DATABASE_URL')
-else:
-    # En local, on utilise directement la chaîne brute depuis decouple/env
-    db_url_string = config('DATABASE_URL', default="")
 
-# Nettoyage si la chaîne contient un préfixe accidentel
-if db_url_string and db_url_string.startswith("DATABASE_URL="):
+
+import re
+from decouple import config
+
+# 1. Charger la chaîne brute depuis le .env
+db_url_string = config('DATABASE_URL')
+
+if db_url_string.startswith("DATABASE_URL="):
     db_url_string = db_url_string.replace("DATABASE_URL=", "", 1)
 
+# 2. Extraction chirurgicale des composants via Regex pour immuniser le mot de passe
 try:
-    # Découpage chirurgical via Regex pour immuniser les caractères spéciaux du mot de passe
+    # Cette regex découpe : postgresql://USER:PASSWORD@HOST:PORT/NAME
     pattern = r"postgresql://([^:]+):(.*)@([^:/]+):(\d+)/(.+)"
     match = re.match(pattern, db_url_string)
     
     if match:
         DB_USER = match.group(1)
-        DB_PASSWORD = match.group(2)  # Conserve le mot de passe intact
+        DB_PASSWORD = match.group(2)  # Contient votre vrai mot de passe intact
         DB_HOST = match.group(3)
         DB_PORT = match.group(4)
         DB_NAME = match.group(5)
-        
-        # SI LE DNS DE VOTRE MAC BUG ET PASSE EN UNKNOWN HOST
-        # On force l'IP directe uniquement si on est sur votre machine locale
-        if not os.environ.get('RENDER') and DB_HOST == 'db.jzismsfpvubnkzpoxvok.supabase.co':
-            DB_HOST = '3.8.214.206'
-            
     else:
-        raise ValueError("Le format de DATABASE_URL est incorrect ou vide.")
+        raise ValueError("Le format de DATABASE_URL dans le fichier .env est incorrect.")
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': DB_NAME,
-            'USER': DB_USER,
-            'PASSWORD': DB_PASSWORD,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
-            'OPTIONS': {
-                'sslmode': 'require',
-            },
-            'CONN_MAX_AGE': 600,
-        }
-    }
-except Exception as e:
-    # Option de secours absolue pour ne pas bloquer votre terminal local si DATABASE_URL échoue
+    # ==============================================================================
+    # FORCE LOCAL CONFIGURATION (CORRECTION EXTRÊME 2)
+    # ==============================================================================
+
     if not os.environ.get('RENDER'):
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'postgres',
-                'USER': 'postgres',
-                'PASSWORD': 'VEK?nSG@B6v%dd5',
-                'HOST': '3.8.214.206',  # IP Directe
-                'PORT': '5432',
-                'OPTIONS': {
-                    'sslmode': 'require',
-                },
-                'CONN_MAX_AGE': 600,
-            }
+        # On vide proprement le dictionnaire pour détruire toute ancienne valeur
+        DATABASES = {} 
+        CLEAN_HOST = 'aws-0-eu-west-2.pooler.supabase.com'.replace(':', '').replace('/', '')
+
+        DATABASES['default'] = {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',          
+            'USER': 'postgres.pvqkmgqhpfjeyotuwzyh',    
+            'PASSWORD': 'gA?7jVwST4fDLw9', # <-- Écrivez votre mot de passe Supabase en clair
+            'HOST': CLEAN_HOST, 
+            'PORT': '6543',              
+            'OPTIONS': {
+                'sslmode': 'require',    
+            },
         }
-    else:
-        raise ValueError(f"Erreur critique de configuration de la base sur Render : {e}")
+        print("!!! CONFIGURATION DE SECOURS SUPABASE FORCEE EN LOCAL !!!")
+        print(f"Vérification de l'hôte actif : {DATABASES['default']['HOST']}")
+
+
+except Exception as e:
+    raise ValueError(f"Erreur critique lors de la lecture de DATABASE_URL : {e}")
+
+
+
 
 # ==============================================================================
 # 6. CONFIGURATION DE L'ENVIRONNEMENT EMAIL & REDIRECTIONS
