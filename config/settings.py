@@ -83,6 +83,8 @@ MIDDLEWARE = [
 
 import re
 from decouple import config
+import os
+import dj_database_url
 
 # 1. Charger la chaîne brute depuis le .env
 db_url_string = config('DATABASE_URL')
@@ -109,24 +111,61 @@ try:
     # FORCE LOCAL CONFIGURATION (CORRECTION EXTRÊME 2)
     # ==============================================================================
 
-    if not os.environ.get('RENDER'):
-        # On vide proprement le dictionnaire pour détruire toute ancienne valeur
-        DATABASES = {} 
+
+# ==============================================================================
+# 5. CONFIGURATION UNIFIÉE DE LA BASE DE DONNÉES (LOCAL & PRODUCTION)
+# ==============================================================================
+
+    if os.environ.get('RENDER'):
+        # SUR RENDER : Décodage automatique et sécurisé de DATABASE_URL via l'outil officiel
+        DATABASES = {
+            'default': dj_database_url.config(
+                conn_max_age=600,
+                ssl_require=True
+            )
+        }
+    else:
+        # EN LOCAL SUR VOTRE MAC :
+        # Tente de lire le mot de passe depuis le terminal, sinon utilise votre valeur par défaut
+        LOCAL_PASSWORD = os.environ.get('MY_LOCAL_DB_PASSWORD', 'gA?7jVwST4fDLw9')
         CLEAN_HOST = 'aws-0-eu-west-2.pooler.supabase.com'.replace(':', '').replace('/', '')
 
-        DATABASES['default'] = {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'postgres',          
-            'USER': 'postgres.pvqkmgqhpfjeyotuwzyh',    
-            'PASSWORD': 'gA?7jVwST4fDLw9', # <-- Écrivez votre mot de passe Supabase en clair
-            'HOST': CLEAN_HOST, 
-            'PORT': '6543',              
-            'OPTIONS': {
-                'sslmode': 'require',    
-            },
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': 'postgres',          
+                'USER': 'postgres.pvqkmgqhpfjeyotuwzyh',    
+                'PASSWORD': LOCAL_PASSWORD, 
+                'HOST': CLEAN_HOST, 
+                'PORT': '6543',              
+                'OPTIONS': {
+                    'sslmode': 'require',    
+                },
+            }
         }
         print("!!! CONFIGURATION DE SECOURS SUPABASE FORCEE EN LOCAL !!!")
-        print(f"Vérification de l'hôte actif : {DATABASES['default']['HOST']}")
+except Exception as e:
+    raise ValueError(f"Erreur critique lors de la lecture de DATABASE_URL : {e}")
+
+###cacher dans le .env
+#    if not os.environ.get('RENDER'):
+#        # On vide proprement le dictionnaire pour détruire toute ancienne valeur
+#        DATABASES = {} 
+#        CLEAN_HOST = 'aws-0-eu-west-2.pooler.supabase.com'.replace(':', '').replace('/', '')
+#
+#        DATABASES['default'] = {
+#            'ENGINE': 'django.db.backends.postgresql',
+#            'NAME': 'postgres',          
+#            'USER': 'postgres.pvqkmgqhpfjeyotuwzyh',    
+#            'PASSWORD': 'gA?7jVwST4fDLw9', # <-- Écrivez votre mot de passe Supabase en clair
+#            'HOST': CLEAN_HOST, 
+#            'PORT': '6543',              
+#            'OPTIONS': {
+#                'sslmode': 'require',    
+#            },
+#        }
+#        print("!!! CONFIGURATION DE SECOURS SUPABASE FORCEE EN LOCAL !!!")
+#        print(f"Vérification de l'hôte actif : {DATABASES['default']['HOST']}")
 
 
 except Exception as e:
